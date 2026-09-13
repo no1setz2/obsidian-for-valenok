@@ -3441,11 +3441,12 @@ end
 
 --// Watermark \--
 function Library:AddWatermark(Segments: { any }?)
-    local Watermark = {
-        Connections = {},
-        Destroyed = false,
-        Cells = {},
-    }
+local Watermark = {
+    Connections = {},
+    Destroyed = false,
+    Cells = {},
+    Visible = true,
+}
 
     local Holder = New("Frame", {
         AnchorPoint = Vector2.zero,
@@ -3490,7 +3491,8 @@ function Library:AddWatermark(Segments: { any }?)
     Library:AddOutline(Holder)
     Library:MakeDraggable(Holder, Holder, true)
 
-    Watermark.Holder = Holder
+Watermark.Holder = Holder
+Watermark.Visible = Holder.Visible
 
     local function BuildCell(Data: any, Order: number)
         local Cell = {}
@@ -3667,16 +3669,17 @@ function Library:AddWatermark(Segments: { any }?)
         end
     end
 
-function Watermark:SetVisible(Visible: boolean)
+function Watermark:SetVisible(Visible)
     if Watermark.Destroyed then
         return
     end
 
     Visible = Visible == true
+
     Watermark.Visible = Visible
 
-    if Holder and Holder.Parent then
-        Holder.Visible = Visible
+    if Watermark.Holder and Watermark.Holder.Parent then
+        Watermark.Holder.Visible = Visible
     end
 end
 
