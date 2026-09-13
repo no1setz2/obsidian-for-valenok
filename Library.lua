@@ -372,7 +372,7 @@ local Templates = {
     --// Library \\--
     Window = {
         Title = "",
-        --Subtitle = "Counter Blox 1.6",
+        Subtitle = "",
         Footer = "",
 
         Position = UDim2.fromOffset(6, 6),
@@ -10656,7 +10656,7 @@ function Library:CreateWindow(WindowInfo)
     local SearchHolder
     local SearchIconImage
     local CurrentTabInfo
-    --local SubtitleLabel
+    local SubtitleLabel
     local CurrentTabLabel
     local CurrentTabDescription
     local ResizeButton
@@ -10846,7 +10846,7 @@ function Library:CreateWindow(WindowInfo)
             Parent = RightWrapper,
         })
 
-        --[[SubtitleLabel = New("TextLabel", {
+        SubtitleLabel = New("TextLabel", {
             BackgroundTransparency = 1,
             Size = UDim2.fromOffset(70, 30),
             Text = WindowInfo.Subtitle or "",
@@ -10856,7 +10856,7 @@ function Library:CreateWindow(WindowInfo)
             TextTruncate = Enum.TextTruncate.AtEnd,
             Visible = not WindowInfo.DisableSearch,
             Parent = RightWrapper,
-        })]]
+        })
 
         CurrentTabInfo = New("Frame", {
             Size = UDim2.fromScale(WindowInfo.DisableSearch and 1 or 0.5, 1),
@@ -11374,19 +11374,19 @@ function Library:CreateWindow(WindowInfo)
         CurrentTabLabel.Text = Name
         CurrentTabDescription.Text = Description
         CurrentTabInfo.Visible = true
-        --SubtitleLabel.Visible = false
+        SubtitleLabel.Visible = false
         SearchHolder.Visible = false
     end
 
     function Window:HideTabInfo()
         CurrentTabInfo.Visible = false
-        --SubtitleLabel.Visible = not WindowInfo.DisableSearch
+        SubtitleLabel.Visible = not WindowInfo.DisableSearch
         SearchHolder.Visible = not WindowInfo.DisableSearch
     end
 
-    --[[function Window:SetSubtitle(Subtitle: string)
+    function Window:SetSubtitle(Subtitle: string)
         SubtitleLabel.Text = Subtitle or ""
-    end]]
+    end
 
     function Window:AddTab(...)
         local Name = nil
