@@ -372,7 +372,7 @@ local Templates = {
     --// Library \\--
     Window = {
         Title = "",
-        Subtitle = "",
+        Subtitle = "Counter Blox 1.6",
         Footer = "",
 
         Position = UDim2.fromOffset(6, 6),
