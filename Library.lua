@@ -3667,9 +3667,18 @@ function Library:AddWatermark(Segments: { any }?)
         end
     end
 
-    function Watermark:SetVisible(Visible: boolean)
+function Watermark:SetVisible(Visible: boolean)
+    if Watermark.Destroyed then
+        return
+    end
+
+    Visible = Visible == true
+    Watermark.Visible = Visible
+
+    if Holder and Holder.Parent then
         Holder.Visible = Visible
     end
+end
 
     function Watermark:Destroy()
         Watermark.Destroyed = true
