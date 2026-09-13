@@ -1,3 +1,4 @@
+print("lib v.1.5.2")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
