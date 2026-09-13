@@ -376,7 +376,7 @@ local Templates = {
         Footer = "",
 
         Position = UDim2.fromOffset(6, 6),
-        Size = UDim2.fromOffset(720, 600),
+        Size = UDim2.fromOffset(985, 570),
         IconSize = UDim2.fromOffset(22, 22),
 
         AutoShow = true,
