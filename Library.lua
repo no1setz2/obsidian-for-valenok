@@ -1,4 +1,4 @@
-print("lib v.1.5.3")
+print("lib v.1.5.4")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -287,7 +287,7 @@ local Library = {
     OriginalMinSize = Vector2.new(480, 360),
     MinSize = Vector2.new(480, 360),
     DPIScale = 1,
-    CornerRadius = 0.6,
+    CornerRadius = 1,
 
     --// Scheme \\--
     IsLightTheme = false,
@@ -395,7 +395,7 @@ local Templates = {
 
         SearchbarSize = UDim2.fromOffset(195, 0),
         SearchbarHeight = 30,
-        SearchbarCornerRadius = 0.6,
+        SearchbarCornerRadius = 2,
         GlobalSearch = false,
 
         CornerRadius = 0.6,
