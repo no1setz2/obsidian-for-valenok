@@ -1,4 +1,4 @@
-print("lib v.1.5.2")
+print("lib v.1.5.3")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -287,7 +287,7 @@ local Library = {
     OriginalMinSize = Vector2.new(480, 360),
     MinSize = Vector2.new(480, 360),
     DPIScale = 1,
-    CornerRadius = 6,
+    CornerRadius = 0.6,
 
     --// Scheme \\--
     IsLightTheme = false,
@@ -395,10 +395,10 @@ local Templates = {
 
         SearchbarSize = UDim2.fromOffset(195, 0),
         SearchbarHeight = 30,
-        SearchbarCornerRadius = 15,
+        SearchbarCornerRadius = 0.6,
         GlobalSearch = false,
 
-        CornerRadius = 6,
+        CornerRadius = 0.6,
         NotifySide = "Right",
         ShowCustomCursor = true,
 
@@ -442,7 +442,7 @@ local Templates = {
         TabButtonsStyle = {
             Gap = 2,
             Padding = 4,
-            CornerRadius = 5,
+            CornerRadius = 0.6,
             Indicator = true,
             IndicatorWidth = 3,
             IndicatorHeight = 20,
