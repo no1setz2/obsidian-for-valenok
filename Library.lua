@@ -1,4 +1,4 @@
-print("lib v.1.5.6")
+print("lib v.1.5.7")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -398,7 +398,7 @@ local Templates = {
         SearchbarCornerRadius = 5,
         GlobalSearch = false,
 
-        CornerRadius = 0.6,
+        CornerRadius = 3,
         NotifySide = "Right",
         ShowCustomCursor = true,
 
@@ -442,7 +442,7 @@ local Templates = {
         TabButtonsStyle = {
             Gap = 2,
             Padding = 4,
-            CornerRadius = 0.6,
+            CornerRadius = 3,
             Indicator = true,
             IndicatorWidth = 3,
             IndicatorHeight = 20,
