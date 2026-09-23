@@ -1,4 +1,4 @@
-print("lib v.1.5.9")
+print("lib v.1.6.0")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -379,7 +379,7 @@ local Templates = {
         Footer = "",
 
         Position = UDim2.fromOffset(6, 6),
-        Size = UDim2.fromOffset(985, 570),
+        Size = UDim2.fromOffset(1050, 620),
         IconSize = UDim2.fromOffset(22, 22),
 
         AutoShow = true,
@@ -398,7 +398,7 @@ local Templates = {
         SearchbarCornerRadius = 5,
         GlobalSearch = false,
 
-        CornerRadius = 3,
+        CornerRadius = 8,
         NotifySide = "Bottom",
         ShowCustomCursor = true,
 
@@ -440,11 +440,11 @@ local Templates = {
         TabSwipeOffset = 26,
         TabSwipeFrom = "bottom",
         TabButtonsStyle = {
-            Gap = 2,
-            Padding = 4,
-            CornerRadius = 3,
+            Gap = 4,
+            Padding = 5,
+            CornerRadius = 6,
             Indicator = true,
-            IndicatorWidth = 34,
+            IndicatorWidth = 46,
             IndicatorHeight = 2,
         },
     },
@@ -1801,7 +1801,7 @@ do
         AnchorPoint = Vector2.new(0.5, 1),
         BackgroundTransparency = 1,
         Position = UDim2.new(0.5, 0, 1, -18),
-        Size = UDim2.new(0, 500, 0, 300),
+        Size = UDim2.new(0, 620, 0, 280),
         ZIndex = 200,
         Parent = ScreenGui,
     })
@@ -10902,7 +10902,7 @@ function Library:SetNotifySide(Side: string)
     if IsBottom then
         NotificationArea.AnchorPoint = Vector2.new(0.5, 1)
         NotificationArea.Position = UDim2.new(0.5, 0, 1, -18)
-        NotificationArea.Size = UDim2.new(0, 500, 0, 300)
+        NotificationArea.Size = UDim2.new(0, 620, 0, 280)
     elseif IsLeft then
         NotificationArea.AnchorPoint = Vector2.new(0, 0)
         NotificationArea.Position = UDim2.fromOffset(6, 6)
@@ -10984,7 +10984,7 @@ function Library:Notify(...)
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = "MainColor",
         Position = IsBottomNotify
-            and UDim2.new(0, 0, 1, 10)
+            and UDim2.new(0, 0, 1, 14)
             or (Library.NotifySide:lower() == "left" and UDim2.new(-1, -8, 0, 0) or UDim2.new(1, 8, 0, 0)),
         Size = UDim2.new(1, 0, 0, 0),
         ZIndex = 5,
@@ -11246,7 +11246,7 @@ function Library:Notify(...)
         TweenService
             :Create(Holder, Library.NotifyTweenInfo, {
                 Position = Library.NotifySide:lower() == "bottom"
-                    and UDim2.new(0, 0, 1, 10)
+                    and UDim2.new(0, 0, 1, 14)
                     or (Library.NotifySide:lower() == "left"
                         and UDim2.new(-1, -8, 0, -2)
                         or UDim2.new(1, 8, 0, -2)),
@@ -11809,7 +11809,7 @@ function Library:CreateWindow(WindowInfo)
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
             ScrollingDirection = Enum.ScrollingDirection.X,
-            Size = UDim2.new(1, 0, 0, 40),
+            Size = UDim2.new(1, 0, 0, 42),
             Parent = MainFrame,
         })
         New("UIListLayout", {
@@ -11819,11 +11819,16 @@ function Library:CreateWindow(WindowInfo)
             Parent = Tabs,
         })
         New("UIPadding", {
-            PaddingBottom = UDim.new(0, TabButtonsStyle.Padding),
-            PaddingLeft = UDim.new(0, 8),
-            PaddingRight = UDim.new(0, 8),
-            PaddingTop = UDim.new(0, TabButtonsStyle.Padding),
+            PaddingBottom = UDim.new(0, 3),
+            PaddingLeft = UDim.new(0, 12),
+            PaddingRight = UDim.new(0, 12),
+            PaddingTop = UDim.new(0, 3),
             Parent = Tabs,
+        })
+
+        Library:MakeLine(MainFrame, {
+            Position = UDim2.fromOffset(0, 90),
+            Size = UDim2.new(1, 0, 0, 1),
         })
 
         --// Container \\--
@@ -11834,8 +11839,8 @@ function Library:CreateWindow(WindowInfo)
             end,
             ClipsDescendants = true,
             Name = "Container",
-            Position = UDim2.new(1, 0, 0, 90),
-            Size = UDim2.new(1, 0, 1, -110),
+            Position = UDim2.new(1, 0, 0, 91),
+            Size = UDim2.new(1, 0, 1, -111),
             Parent = MainFrame,
         })
         New("UIPadding", {
@@ -12177,7 +12182,7 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.fromOffset(116, 32),
+                Size = UDim2.fromOffset(132, 34),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -12220,8 +12225,8 @@ function Library:CreateWindow(WindowInfo)
                 Position = UDim2.fromOffset(26, 0),
                 Size = UDim2.new(1, -26, 1, 0),
                 Text = Name,
-                TextSize = 13,
-                TextTransparency = 0.5,
+                TextSize = 12,
+                TextTransparency = 0.35,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Visible = not IsCompact,
                 Parent = ButtonHolder,
@@ -13630,7 +13635,7 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.fromOffset(116, 32),
+                Size = UDim2.fromOffset(132, 34),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -13674,8 +13679,8 @@ function Library:CreateWindow(WindowInfo)
                 Position = UDim2.fromOffset(26, 0),
                 Size = UDim2.new(1, -26, 1, 0),
                 Text = Name,
-                TextSize = 13,
-                TextTransparency = 0.5,
+                TextSize = 12,
+                TextTransparency = 0.35,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Visible = not IsCompact,
                 Parent = ButtonHolder,
