@@ -1,4 +1,4 @@
-print("lib v.1.6.8")
+print("lib v.1.7.0")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -11866,10 +11866,10 @@ function Library:CreateWindow(WindowInfo)
             Parent = MainFrame,
         })
         New("UIPadding", {
-            PaddingBottom = UDim.new(0, 4),
-            PaddingLeft = UDim.new(0, 9),
-            PaddingRight = UDim.new(0, 9),
-            PaddingTop = UDim.new(0, 4),
+            PaddingBottom = UDim.new(0, 5),
+            PaddingLeft = UDim.new(0, 10),
+            PaddingRight = UDim.new(0, 10),
+            PaddingTop = UDim.new(0, 6),
             Parent = Container,
         })
 
@@ -12642,12 +12642,12 @@ function Library:CreateWindow(WindowInfo)
                 Parent = if ParentObj.Type == "Groupbox" then ParentObj.Container else (Info.Side == 1 and TabLeft or TabRight),
             })
             New("UIListLayout", {
-                Padding = UDim.new(0, 7),
+                Padding = UDim.new(0, 9),
                 Parent = BoxHolder,
             })
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 6),
-                PaddingTop = UDim.new(0, 6),
+                PaddingBottom = UDim.new(0, 5),
+                PaddingTop = UDim.new(0, 5),
                 Parent = BoxHolder,
             })
 
@@ -13057,7 +13057,9 @@ function Library:CreateWindow(WindowInfo)
                 New("UIListLayout", {
                     Parent = GroupboxHolder,
                 })
-                Library:AddOutline(GroupboxHolder)
+                local GroupboxOutline, GroupboxShadow = Library:AddOutline(GroupboxHolder)
+                GroupboxOutline.Transparency = 0.28
+                GroupboxShadow.Transparency = 0.72
 
                 GroupboxTop = New("Frame", {
                     AutomaticSize = Enum.AutomaticSize.Y,
@@ -13066,10 +13068,10 @@ function Library:CreateWindow(WindowInfo)
                     Parent = GroupboxHolder,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 7),
+                    PaddingBottom = UDim.new(0, 6),
                     PaddingLeft = UDim.new(0, 8),
                     PaddingRight = UDim.new(0, 8),
-                    PaddingTop = UDim.new(0, 7),
+                    PaddingTop = UDim.new(0, 6),
                     Parent = GroupboxTop,
                 })
 
@@ -13097,10 +13099,10 @@ function Library:CreateWindow(WindowInfo)
                     Parent = TextsFrame,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 4),
+                    PaddingBottom = UDim.new(0, 3),
                     PaddingLeft = UDim.new(0, 5),
                     PaddingRight = UDim.new(0, 5),
-                    PaddingTop = UDim.new(0, 4),
+                    PaddingTop = UDim.new(0, 3),
                     Parent = TextsFrame,
                 })
 
@@ -13109,6 +13111,7 @@ function Library:CreateWindow(WindowInfo)
                     BackgroundTransparency = 1,
                     Size = UDim2.fromScale(1, 0),
                     Text = Info.Name,
+                    TextColor3 = "AccentColor",
                     TextSize = 13,
                     TextWrapped = true,
                     TextXAlignment = Enum.TextXAlignment.Left,
@@ -13162,14 +13165,14 @@ function Library:CreateWindow(WindowInfo)
                 })
 
                 GroupboxList = New("UIListLayout", {
-                    Padding = UDim.new(0, 7),
+                    Padding = UDim.new(0, 5),
                     Parent = GroupboxContainer,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 8),
+                    PaddingBottom = UDim.new(0, 7),
                     PaddingLeft = UDim.new(0, 8),
                     PaddingRight = UDim.new(0, 8),
-                    PaddingTop = UDim.new(0, 8),
+                    PaddingTop = UDim.new(0, 7),
                     Parent = GroupboxContainer,
                 })
             end
