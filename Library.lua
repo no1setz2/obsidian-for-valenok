@@ -1,4 +1,4 @@
-print("lib v.1.6.7")
+print("lib v.1.6.8")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -375,7 +375,7 @@ local Templates = {
     --// Library \\--
     Window = {
         Title = "",
-        Subtitle = "Counter Blox",
+        Subtitle = "",
         Footer = "",
 
         Position = UDim2.fromOffset(6, 6),
@@ -11444,7 +11444,6 @@ function Library:CreateWindow(WindowInfo)
     local SearchHolder
     local SearchIconImage
     local CurrentTabInfo
-    local SubtitleLabel
     local CurrentTabLabel
     local CurrentTabDescription
     local ResizeButton
@@ -11575,7 +11574,7 @@ function Library:CreateWindow(WindowInfo)
             AnchorPoint = Vector2.new(0.5, 0),
             BackgroundTransparency = 1,
             Position = UDim2.fromScale(0.5, 0),
-            Size = UDim2.new(0.5, 0, 1, 0),
+            Size = UDim2.new(1, -220, 1, 0),
             Parent = TopBar,
         })
         New("UIListLayout", {
@@ -11606,20 +11605,14 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        local X = Library:GetTextBounds(
-            WindowInfo.Title,
-            Library.Scheme.Font,
-            20,
-            TitleHolder.AbsoluteSize.X - (WindowInfo.Icon and WindowInfo.IconSize.X.Offset + 6 or 0) - 12
-        )
         WindowTitle = New("TextLabel", {
             AutomaticSize = Enum.AutomaticSize.X,
             BackgroundTransparency = 1,
             Size = UDim2.fromOffset(0, 1),
             Text = WindowInfo.Title,
-            TextColor3 = "AccentColor",
+            TextColor3 = "FontColor",
             TextSize = 15,
-            TextXAlignment = Enum.TextXAlignment.Right,
+            TextXAlignment = Enum.TextXAlignment.Center,
             Parent = TitleHolder,
         })
 
@@ -11638,18 +11631,6 @@ function Library:CreateWindow(WindowInfo)
             VerticalAlignment = Enum.VerticalAlignment.Center,
             Padding = UDim.new(0, 7),
             Parent = RightWrapper,
-        })
-
-        SubtitleLabel = New("TextLabel", {
-            BackgroundTransparency = 1,
-            Size = UDim2.fromOffset(70, 30),
-            Text = WindowInfo.Subtitle or "",
-            TextSize = 10,
-            TextTransparency = 0.5,
-            TextXAlignment = Enum.TextXAlignment.Right,
-            TextTruncate = Enum.TextTruncate.AtEnd,
-            Visible = true,
-            Parent = TitleHolder,
         })
 
         CurrentTabInfo = New("Frame", {
@@ -11885,10 +11866,10 @@ function Library:CreateWindow(WindowInfo)
             Parent = MainFrame,
         })
         New("UIPadding", {
-            PaddingBottom = UDim.new(0, 0),
-            PaddingLeft = UDim.new(0, 4),
-            PaddingRight = UDim.new(0, 4),
-            PaddingTop = UDim.new(0, 0),
+            PaddingBottom = UDim.new(0, 4),
+            PaddingLeft = UDim.new(0, 9),
+            PaddingRight = UDim.new(0, 9),
+            PaddingTop = UDim.new(0, 4),
             Parent = Container,
         })
 
@@ -12150,18 +12131,12 @@ function Library:CreateWindow(WindowInfo)
         CurrentTabLabel.Text = Name
         CurrentTabDescription.Text = Description
         CurrentTabInfo.Visible = false
-        SubtitleLabel.Visible = true
         SearchHolder.Visible = not WindowInfo.DisableSearch
     end
 
     function Window:HideTabInfo()
         CurrentTabInfo.Visible = false
-        SubtitleLabel.Visible = true
         SearchHolder.Visible = not WindowInfo.DisableSearch
-    end
-
-    function Window:SetSubtitle(Subtitle: string)
-        SubtitleLabel.Text = Subtitle or ""
     end
 
     function Window:AddTab(...)
@@ -12291,18 +12266,18 @@ function Library:CreateWindow(WindowInfo)
                 CanvasSize = UDim2.fromScale(0, 0),
                 ScrollBarImageTransparency = 1,
                 ScrollBarThickness = 0,
-                Size = UDim2.new(0.5, -3, 1, 0),
+                Size = UDim2.new(0.5, -6, 1, 0),
                 Parent = TabContainer,
             })
             New("UIListLayout", {
-                Padding = UDim.new(0, 2),
+                Padding = UDim.new(0, 7),
                 Parent = TabLeft,
             })
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 2),
-                PaddingLeft = UDim.new(0, 2),
-                PaddingRight = UDim.new(0, 2),
-                PaddingTop = UDim.new(0, 2),
+                PaddingBottom = UDim.new(0, 5),
+                PaddingLeft = UDim.new(0, 3),
+                PaddingRight = UDim.new(0, 3),
+                PaddingTop = UDim.new(0, 5),
                 Parent = TabLeft,
             })
             do
@@ -12330,14 +12305,14 @@ function Library:CreateWindow(WindowInfo)
                 Parent = TabContainer,
             })
             New("UIListLayout", {
-                Padding = UDim.new(0, 2),
+                Padding = UDim.new(0, 7),
                 Parent = TabRight,
             })
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 2),
-                PaddingLeft = UDim.new(0, 2),
-                PaddingRight = UDim.new(0, 2),
-                PaddingTop = UDim.new(0, 2),
+                PaddingBottom = UDim.new(0, 5),
+                PaddingLeft = UDim.new(0, 3),
+                PaddingRight = UDim.new(0, 3),
+                PaddingTop = UDim.new(0, 5),
                 Parent = TabRight,
             })
             do
@@ -12667,12 +12642,12 @@ function Library:CreateWindow(WindowInfo)
                 Parent = if ParentObj.Type == "Groupbox" then ParentObj.Container else (Info.Side == 1 and TabLeft or TabRight),
             })
             New("UIListLayout", {
-                Padding = UDim.new(0, 4),
+                Padding = UDim.new(0, 7),
                 Parent = BoxHolder,
             })
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 4),
-                PaddingTop = UDim.new(0, 4),
+                PaddingBottom = UDim.new(0, 6),
+                PaddingTop = UDim.new(0, 6),
                 Parent = BoxHolder,
             })
 
@@ -13091,10 +13066,10 @@ function Library:CreateWindow(WindowInfo)
                     Parent = GroupboxHolder,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 5),
-                    PaddingLeft = UDim.new(0, 5),
-                    PaddingRight = UDim.new(0, 5),
-                    PaddingTop = UDim.new(0, 5),
+                    PaddingBottom = UDim.new(0, 7),
+                    PaddingLeft = UDim.new(0, 8),
+                    PaddingRight = UDim.new(0, 8),
+                    PaddingTop = UDim.new(0, 7),
                     Parent = GroupboxTop,
                 })
 
@@ -13122,10 +13097,10 @@ function Library:CreateWindow(WindowInfo)
                     Parent = TextsFrame,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 3),
-                    PaddingLeft = UDim.new(0, 6),
-                    PaddingRight = UDim.new(0, 6),
-                    PaddingTop = UDim.new(0, 3),
+                    PaddingBottom = UDim.new(0, 4),
+                    PaddingLeft = UDim.new(0, 5),
+                    PaddingRight = UDim.new(0, 5),
+                    PaddingTop = UDim.new(0, 4),
                     Parent = TextsFrame,
                 })
 
@@ -13187,14 +13162,14 @@ function Library:CreateWindow(WindowInfo)
                 })
 
                 GroupboxList = New("UIListLayout", {
-                    Padding = UDim.new(0, 5),
+                    Padding = UDim.new(0, 7),
                     Parent = GroupboxContainer,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 6),
-                    PaddingLeft = UDim.new(0, 6),
-                    PaddingRight = UDim.new(0, 6),
-                    PaddingTop = UDim.new(0, 6),
+                    PaddingBottom = UDim.new(0, 8),
+                    PaddingLeft = UDim.new(0, 8),
+                    PaddingRight = UDim.new(0, 8),
+                    PaddingTop = UDim.new(0, 8),
                     Parent = GroupboxContainer,
                 })
             end
