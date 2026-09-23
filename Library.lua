@@ -1,4 +1,4 @@
-print("lib v2.0.0")
+print("lib v2.0.0n")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -12256,30 +12256,42 @@ function Library:CreateWindow(WindowInfo)
                 PaddingTop = UDim.new(0, 0),
                 Parent = ButtonHolder,
             })
-            TabLabel = New("TextLabel", {
-                BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(0, 0),
-                Size = UDim2.fromScale(1, 1),
-                Text = Name,
-                TextSize = 13,
-                TextTransparency = 0.5,
-                TextXAlignment = Enum.TextXAlignment.Center,
-                Visible = not IsCompact,
+            New("UIListLayout", {
+                FillDirection = Enum.FillDirection.Horizontal,
+                HorizontalAlignment = Enum.HorizontalAlignment.Center,
+                VerticalAlignment = Enum.VerticalAlignment.Center,
+                Padding = UDim.new(0, 6),
+                SortOrder = Enum.SortOrder.LayoutOrder,
                 Parent = ButtonHolder,
             })
 
             if Icon then
                 TabIcon = New("ImageLabel", {
+                    BackgroundTransparency = 1,
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
                     ImageTransparency = 0.5,
+                    LayoutOrder = 1,
                     ScaleType = Enum.ScaleType.Fit,
                     Size = UDim2.fromOffset(14, 14),
-                    SizeConstraint = Enum.SizeConstraint.RelativeXY,
-                    Visible = false,
+                    Visible = true,
                     Parent = ButtonHolder,
                 })
                 Library:ApplyLucideIcon(TabIcon, Icon)
             end
+
+            TabLabel = New("TextLabel", {
+                AutomaticSize = Enum.AutomaticSize.X,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0, 0, 1, 0),
+                Text = Name,
+                TextSize = 13,
+                TextTransparency = 0.5,
+                TextTruncate = Enum.TextTruncate.AtEnd,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Visible = not IsCompact,
+                LayoutOrder = 2,
+                Parent = ButtonHolder,
+            })
 
             table.insert(Library.TabButtons, {
                 Label = TabLabel,
@@ -13719,31 +13731,42 @@ function Library:CreateWindow(WindowInfo)
                 PaddingTop = UDim.new(0, 0),
                 Parent = ButtonHolder,
             })
-
-            TabLabel = New("TextLabel", {
-                BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(0, 0),
-                Size = UDim2.fromScale(1, 1),
-                Text = Name,
-                TextSize = 13,
-                TextTransparency = 0.5,
-                TextXAlignment = Enum.TextXAlignment.Center,
-                Visible = not IsCompact,
+            New("UIListLayout", {
+                FillDirection = Enum.FillDirection.Horizontal,
+                HorizontalAlignment = Enum.HorizontalAlignment.Center,
+                VerticalAlignment = Enum.VerticalAlignment.Center,
+                Padding = UDim.new(0, 6),
+                SortOrder = Enum.SortOrder.LayoutOrder,
                 Parent = ButtonHolder,
             })
 
             if Icon then
                 TabIcon = New("ImageLabel", {
+                    BackgroundTransparency = 1,
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
                     ImageTransparency = 0.5,
+                    LayoutOrder = 1,
                     ScaleType = Enum.ScaleType.Fit,
                     Size = UDim2.fromOffset(14, 14),
-                    SizeConstraint = Enum.SizeConstraint.RelativeXY,
-                    Visible = false,
+                    Visible = true,
                     Parent = ButtonHolder,
                 })
                 Library:ApplyLucideIcon(TabIcon, Icon)
             end
+
+            TabLabel = New("TextLabel", {
+                AutomaticSize = Enum.AutomaticSize.X,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0, 0, 1, 0),
+                Text = Name,
+                TextSize = 13,
+                TextTransparency = 0.5,
+                TextTruncate = Enum.TextTruncate.AtEnd,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Visible = not IsCompact,
+                LayoutOrder = 2,
+                Parent = ButtonHolder,
+            })
 
             table.insert(Library.TabButtons, {
                 Label = TabLabel,
