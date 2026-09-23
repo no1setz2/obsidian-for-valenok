@@ -1,4 +1,4 @@
-print("lib v.1.9.8")
+print("library v.2.0.0")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -1801,7 +1801,7 @@ do
         AnchorPoint = Vector2.new(0.5, 1),
         BackgroundTransparency = 1,
         Position = UDim2.new(0.5, 0, 1, -48),
-        Size = UDim2.new(0, 340, 0, 1),
+        Size = UDim2.new(0, 300, 0, 1),
         ZIndex = 200,
         Parent = ScreenGui,
     })
@@ -10866,6 +10866,8 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
 
     if Side == "bottom" then
         local RunningY = 0
+        local Gap = 4
+        local BottomMargin = 48
 
         for Index = #NotifyOrder, 1, -1 do
             local FakeBackground = NotifyOrder[Index]
@@ -10874,8 +10876,14 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
                 continue
             end
 
-            local Height = FakeBackground.AbsoluteSize.Y / Library.DPIScale
-            local Target = UDim2.new(0.5, 0, 1, -(RunningY + 6))
+            local Height = FakeBackground.AbsoluteSize.Y / math.max(Library.DPIScale, 0.001)
+            if Height <= 0 then
+                Height = Data.LastHeight or 0
+            else
+                Data.LastHeight = Height
+            end
+
+            local Target = UDim2.new(0.5, 0, 1, -(BottomMargin + RunningY))
 
             if Snap or not Data.PositionInitialized then
                 if Data.PositionTween then
@@ -10894,7 +10902,7 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
                 Data.PositionTween:Play()
             end
 
-            RunningY += Height + 6
+            RunningY += Height + Gap
         end
         return
     end
@@ -10927,7 +10935,7 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
             Data.PositionTween:Play()
         end
 
-        RunningY += FakeBackground.AbsoluteSize.Y / Library.DPIScale + 8
+        RunningY += (FakeBackground.AbsoluteSize.Y / math.max(Library.DPIScale, 0.001)) + 4
     end
 end
 
@@ -10943,7 +10951,7 @@ function Library:SetNotifySide(Side: string)
     if LowerSide == "bottom" then
         NotificationArea.AnchorPoint = Vector2.new(0.5, 1)
         NotificationArea.Position = UDim2.new(0.5, 0, 1, -48)
-        NotificationArea.Size = UDim2.new(0, 340, 0, 1)
+        NotificationArea.Size = UDim2.new(0, 300, 0, 1)
     elseif LowerSide == "left" then
         NotificationArea.AnchorPoint = Vector2.new(0, 0)
         NotificationArea.Position = UDim2.fromOffset(6, 6)
@@ -11026,7 +11034,7 @@ function Library:Notify(...)
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = "MainColor",
         Position = IsBottomNotify
-            and UDim2.new(0, 0, 1, 14)
+            and UDim2.new(0, 0, 1, 10)
             or (Library.NotifySide:lower() == "left" and UDim2.new(-1, -8, 0, 0) or UDim2.new(1, 8, 0, 0)),
         Size = UDim2.new(1, 0, 0, 0),
         ZIndex = 5,
@@ -11218,7 +11226,7 @@ function Library:Notify(...)
 
         local DesiredWidth = math.max(TitleX, DescX) + 24 + ExtraWidth + CloseWidth
         if IsBottomNotify then
-            DesiredWidth = math.clamp(DesiredWidth, 250, 340)
+            DesiredWidth = math.clamp(DesiredWidth, 220, 300)
         end
         FakeBackground.Size = UDim2.fromOffset(DesiredWidth, 0)
 
@@ -11228,7 +11236,10 @@ function Library:Notify(...)
                     return
                 end
 
-                Library:UpdateNotificationPositions(true)
+                if IsBottomNotify then
+                    RunService.Heartbeat:Wait()
+                end
+                Library:UpdateNotificationPositions(false)
             end)
         end
     end
@@ -11287,7 +11298,7 @@ function Library:Notify(...)
 
         local ExitPosition
         if IsBottomNotify then
-            ExitPosition = UDim2.new(0, 0, 1, 14)
+            ExitPosition = UDim2.new(0, 0, 1, 10)
         else
             ExitPosition = Library.NotifySide:lower() == "left"
                 and UDim2.new(-1, -8, 0, -2)
@@ -11349,11 +11360,14 @@ function Library:Notify(...)
     Data:Resize()
 
     FakeBackground.Visible = true
+    if IsBottomNotify then
+        RunService.Heartbeat:Wait()
+    end
     Library:UpdateNotificationPositions(true)
 
     local NotificationTargetPosition = Holder.Position
     if IsBottomNotify then
-        Holder.Position = UDim2.new(0, 0, 1, 14)
+        Holder.Position = UDim2.new(0, 0, 1, 10)
     end
 
     TweenService:Create(Holder, Library.NotifyTweenInfo, {
@@ -11844,7 +11858,7 @@ function Library:CreateWindow(WindowInfo)
 
         --// Tabs \\--
         Tabs = New("ScrollingFrame", {
-            AutomaticCanvasSize = Enum.AutomaticSize.X,
+            AutomaticCanvasSize = Enum.AutomaticSize.None,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 57),
@@ -11855,19 +11869,45 @@ function Library:CreateWindow(WindowInfo)
         })
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalFlex = Enum.UIFlexAlignment.Fill,
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            HorizontalAlignment = Enum.HorizontalAlignment.Left,
             VerticalAlignment = Enum.VerticalAlignment.Center,
             Padding = UDim.new(0, 0),
             Parent = Tabs,
         })
-        New("UIPadding", {
-            PaddingBottom = UDim.new(0, 0),
-            PaddingLeft = UDim.new(0, 18),
-            PaddingRight = UDim.new(0, 18),
-            PaddingTop = UDim.new(0, 0),
-            Parent = Tabs,
-        })
+
+        -- Every visible tab gets the same width. Avoid flex-grow on this
+        -- ScrollingFrame because it can squeeze tabs while the list changes.
+        local function ReflowTabButtons()
+            local Buttons = {}
+
+            for _, Child in Tabs:GetChildren() do
+                if Child:IsA("TextButton") and Child.Visible then
+                    table.insert(Buttons, Child)
+                end
+            end
+
+            table.sort(Buttons, function(A, B)
+                if A.LayoutOrder == B.LayoutOrder then
+                    return A.Name < B.Name
+                end
+                return A.LayoutOrder < B.LayoutOrder
+            end)
+
+            local Count = #Buttons
+            if Count == 0 then
+                Tabs.CanvasSize = UDim2.fromScale(0, 0)
+                return
+            end
+
+            local Width = 1 / Count
+            for Index, Button in Buttons do
+                Button.Size = UDim2.new(Width, 0, 1, 0)
+                Button.LayoutOrder = Index
+            end
+
+            Tabs.CanvasSize = UDim2.fromScale(1, 0)
+            Tabs.CanvasPosition = Vector2.zero
+        end
         Library:MakeLine(MainFrame, {
             Position = UDim2.fromOffset(0, 100),
             Size = UDim2.new(1, 0, 0, 1),
@@ -12198,7 +12238,7 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 0, 1, 0),
+                Size = UDim2.new(1, 0, 1, 0),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -12207,11 +12247,6 @@ function Library:CreateWindow(WindowInfo)
                 CornerRadius = UDim.new(0, 0),
                 Parent = TabButton,
             })
-            New("UIFlexItem", {
-                FlexMode = Enum.UIFlexMode.Grow,
-                Parent = TabButton,
-            })
-
             if TabButtonsStyle.Indicator then
                 TabIndicator = New("Frame", {
                     AnchorPoint = Vector2.new(0.5, 1),
@@ -12266,10 +12301,12 @@ function Library:CreateWindow(WindowInfo)
             end
 
             table.insert(Library.TabButtons, {
+                Button = TabButton,
                 Label = TabLabel,
                 Padding = ButtonPadding,
                 Icon = TabIcon,
             })
+            ReflowTabButtons()
 
             --// Tab Container \\--
             TabContainer = New("Frame", {
@@ -13518,11 +13555,14 @@ function Library:CreateWindow(WindowInfo)
             if not Visible and Library.ActiveTab == Tab then
                 Tab:Hide()
             end
+
+            ReflowTabButtons()
         end
 
         function Tab:SetOrder(NewOrder: number)
             Order = NewOrder
             TabButton.LayoutOrder = Order
+            ReflowTabButtons()
         end
 
         function Tab:SetTooltip(Text: string?)
@@ -13596,6 +13636,7 @@ function Library:CreateWindow(WindowInfo)
 
                 TabButton:Destroy()
             end
+            ReflowTabButtons()
 
             Library.Tabs[Name] = nil
         end
@@ -13661,7 +13702,7 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 0, 1, 0),
+                Size = UDim2.new(1, 0, 1, 0),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -13670,11 +13711,6 @@ function Library:CreateWindow(WindowInfo)
                 CornerRadius = UDim.new(0, 0),
                 Parent = TabButton,
             })
-            New("UIFlexItem", {
-                FlexMode = Enum.UIFlexMode.Grow,
-                Parent = TabButton,
-            })
-
             if TabButtonsStyle.Indicator then
                 TabIndicator = New("Frame", {
                     AnchorPoint = Vector2.new(0.5, 1),
@@ -13730,10 +13766,12 @@ function Library:CreateWindow(WindowInfo)
             end
 
             table.insert(Library.TabButtons, {
+                Button = TabButton,
                 Label = TabLabel,
                 Padding = ButtonPadding,
                 Icon = TabIcon,
             })
+            ReflowTabButtons()
 
             --// Tab Container \\--
             TabContainer = New("ScrollingFrame", {
@@ -13884,6 +13922,7 @@ function Library:CreateWindow(WindowInfo)
 
                 TabButton:Destroy()
             end
+            ReflowTabButtons()
 
             Library.Tabs[Name] = nil
         end
@@ -13891,6 +13930,7 @@ function Library:CreateWindow(WindowInfo)
         function Tab:SetOrder(NewOrder: number)
             Order = NewOrder
             TabButton.LayoutOrder = Order
+            ReflowTabButtons()
         end
 
         function Tab:RefreshSides() end
