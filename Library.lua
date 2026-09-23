@@ -1,4 +1,4 @@
-print("lib v.1.6.1")
+print("lib v.1.6.2")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -1800,8 +1800,8 @@ do
     NotificationArea = New("Frame", {
         AnchorPoint = Vector2.new(0.5, 1),
         BackgroundTransparency = 1,
-        Position = UDim2.new(0.5, 0, 1, -18),
-        Size = UDim2.new(0, 520, 0, 260),
+        Position = UDim2.new(0.5, 0, 1, -72),
+        Size = UDim2.new(0, 460, 0, 180),
         ZIndex = 200,
         Parent = ScreenGui,
     })
@@ -10864,27 +10864,27 @@ end
 function Library:UpdateNotificationPositions(Snap: boolean?)
     local RunningY = 0
 
-    -- Notifications are intentionally bottom-centered, like a wide status bar.
-    -- Newer notifications appear closest to the bottom and older ones stack upward.
     for Index = #NotifyOrder, 1, -1 do
         local FakeBackground = NotifyOrder[Index]
         local Data = Library.Notifications[FakeBackground]
-        if not (Data and FakeBackground.Parent) then continue end
+        if not (Data and FakeBackground.Parent) then
+            continue
+        end
 
-        local Height = FakeBackground.AbsoluteSize.Y / Library.DPIScale
+        FakeBackground.AnchorPoint = Vector2.new(0.5, 1)
+        local Height = math.max(48, FakeBackground.AbsoluteSize.Y / Library.DPIScale)
         local Target = UDim2.new(0.5, 0, 1, -RunningY)
 
         if Snap or not Data.PositionInitialized then
-            FakeBackground.AnchorPoint = Vector2.new(0.5, 1)
             FakeBackground.Position = Target
             Data.PositionInitialized = true
-        elseif FakeBackground.Position ~= Target then
+        else
             TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
                 Position = Target,
             }):Play()
         end
 
-        RunningY = RunningY + Height + 8
+        RunningY += Height + 7
     end
 end
 
@@ -10894,7 +10894,7 @@ function Library:SetNotifySide(Side: string)
     Library.NotifySide = Side
 
     NotificationArea.AnchorPoint = Vector2.new(0.5, 1)
-    NotificationArea.Position = UDim2.new(0.5, 0, 1, -18)
+    NotificationArea.Position = UDim2.new(0.5, 0, 1, -72)
 
     for FakeBackground in Library.Notifications do
         if not (FakeBackground and FakeBackground.Parent) then continue end
@@ -10961,7 +10961,7 @@ function Library:Notify(...)
     local Holder = New("Frame", {
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = "MainColor",
-        Position = UDim2.new(0, 0, 1, 12),
+        Position = UDim2.new(0, 0, 0, 0),
         Size = UDim2.new(1, 0, 0, 0),
         ZIndex = 5,
         Parent = FakeBackground,
@@ -11151,7 +11151,7 @@ function Library:Notify(...)
         end
 
         local ContentWidth = math.max(TitleX, DescX) + 24 + ExtraWidth + CloseWidth
-        local WideWidth = math.min(500, math.max(420, ContentWidth))
+        local WideWidth = math.min(440, math.max(380, ContentWidth))
         FakeBackground.Size = UDim2.new(0, WideWidth, 0, 0)
 
         if Library.Notifications[FakeBackground] then
@@ -11218,8 +11218,8 @@ function Library:Notify(...)
         Library:UpdateNotificationPositions()
 
         TweenService
-            :Create(Holder, Library.NotifyTweenInfo, {
-                Position = UDim2.new(0, 0, 1, 12),
+            :Create(FakeBackground, Library.NotifyTweenInfo, {
+                Position = FakeBackground.Position + UDim2.fromOffset(0, 18),
             })
             :Play()
 
@@ -11274,15 +11274,16 @@ function Library:Notify(...)
     Data:Resize()
 
     FakeBackground.Visible = true
-    TweenService:Create(Holder, Library.NotifyTweenInfo, {
-        Position = UDim2.new(0, 0, 0, 0),
-    }):Play()
 
-    task.defer(function()
-        if not Data.Destroyed then
-            Library:UpdateNotificationPositions(true)
-        end
-    end)
+    -- Reflow existing notifications first, then animate this notification into
+    -- its exact slot. This prevents overlap when :Notify() is spammed.
+    Library:UpdateNotificationPositions(true)
+
+    local TargetPosition = FakeBackground.Position
+    FakeBackground.Position = TargetPosition + UDim2.fromOffset(0, 18)
+    TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
+        Position = TargetPosition,
+    }):Play()
 
     task.delay(Library.NotifyTweenInfo.Time, function()
         if Data.Persist then
@@ -11435,8 +11436,9 @@ function Library:CreateWindow(WindowInfo)
 
         DividerLine = New("Frame", {
             BackgroundColor3 = "OutlineColor",
-            Position = UDim2.fromOffset(InitialLeftWidth, 0),
-            Size = UDim2.new(0, 1, 1, -21),
+            BackgroundTransparency = 1,
+            Position = UDim2.fromOffset(0, 0),
+            Size = UDim2.fromOffset(0, 0),
             Parent = MainFrame,
             ZIndex = 2
         })
@@ -11503,14 +11505,14 @@ function Library:CreateWindow(WindowInfo)
         --// Title \\--
         TitleHolder = New("Frame", {
             BackgroundTransparency = 1,
-            Size = UDim2.new(0, InitialLeftWidth, 1, 0),
+            Size = UDim2.new(0, math.max(210, InitialLeftWidth), 1, 0),
             Parent = TopBar,
         })
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            HorizontalAlignment = Enum.HorizontalAlignment.Left,
             VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding = UDim.new(0, 6),
+            Padding = UDim.new(0, 7),
             Parent = TitleHolder,
         })
 
@@ -11553,7 +11555,7 @@ function Library:CreateWindow(WindowInfo)
             AnchorPoint = Vector2.new(1, 0.5),
             BackgroundTransparency = 1,
             Position = UDim2.new(1, -38, 0.5, 0),
-            Size = UDim2.new(1, -InitialLeftWidth - 50 - 1, 1, -16),
+            Size = UDim2.new(1, -math.max(210, InitialLeftWidth) - 50 - 1, 1, -16),
             Parent = TopBar,
         })
 
@@ -11772,36 +11774,39 @@ function Library:CreateWindow(WindowInfo)
 
         --// Tabs \\--
         Tabs = New("ScrollingFrame", {
-            AutomaticCanvasSize = Enum.AutomaticSize.Y,
+            AutomaticCanvasSize = Enum.AutomaticSize.X,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0, InitialLeftWidth, 1, -70),
+            ScrollingDirection = Enum.ScrollingDirection.X,
+            Size = UDim2.new(1, 0, 0, 40),
             Parent = MainFrame,
         })
         New("UIListLayout", {
-            Padding = UDim.new(0, TabButtonsStyle.Gap),
+            FillDirection = Enum.FillDirection.Horizontal,
+            VerticalAlignment = Enum.VerticalAlignment.Center,
+            Padding = UDim.new(0, 3),
             Parent = Tabs,
         })
         New("UIPadding", {
-            PaddingBottom = UDim.new(0, TabButtonsStyle.Padding),
-            PaddingLeft = UDim.new(0, TabButtonsStyle.Padding),
-            PaddingRight = UDim.new(0, TabButtonsStyle.Padding),
-            PaddingTop = UDim.new(0, TabButtonsStyle.Padding),
+            PaddingBottom = UDim.new(0, 3),
+            PaddingLeft = UDim.new(0, 10),
+            PaddingRight = UDim.new(0, 10),
+            PaddingTop = UDim.new(0, 3),
             Parent = Tabs,
         })
 
         --// Container \\--
         Container = New("Frame", {
-            AnchorPoint = Vector2.new(1, 0),
+            AnchorPoint = Vector2.new(0, 0),
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             ClipsDescendants = true,
             Name = "Container",
-            Position = UDim2.new(1, 0, 0, 49),
-            Size = UDim2.new(1, -InitialLeftWidth - 1, 1, -70),
+            Position = UDim2.new(0, 0, 0, 90),
+            Size = UDim2.new(1, 0, 1, -111),
             Parent = MainFrame,
         })
         New("UIPadding", {
@@ -12152,9 +12157,10 @@ function Library:CreateWindow(WindowInfo)
         Icon = Library:GetCustomIcon(Icon)
         do
             TabButton = New("TextButton", {
+                AutomaticSize = Enum.AutomaticSize.X,
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(1, 0, 0, 32),
+                Size = UDim2.new(0, 0, 0, 34),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -12166,11 +12172,11 @@ function Library:CreateWindow(WindowInfo)
 
             if TabButtonsStyle.Indicator then
                 TabIndicator = New("Frame", {
-                    AnchorPoint = Vector2.new(1, 0.5),
+                    AnchorPoint = Vector2.new(0.5, 1),
                     BackgroundColor3 = "AccentColor",
                     BackgroundTransparency = 1,
-                    Position = UDim2.new(0, -2, 0.5, 0),
-                    Size = UDim2.fromOffset(TabButtonsStyle.IndicatorWidth, TabButtonsStyle.IndicatorHeight),
+                    Position = UDim2.new(0.5, 0, 1, -1),
+                    Size = UDim2.fromOffset(math.max(22, TabButtonsStyle.IndicatorWidth + 12), 2),
                     Parent = TabButton,
                 })
 
@@ -12186,18 +12192,19 @@ function Library:CreateWindow(WindowInfo)
                 Parent = TabButton,
             })
             local ButtonPadding = New("UIPadding", {
-                PaddingBottom = UDim.new(0, IsCompact and 5 or 6),
-                PaddingLeft = UDim.new(0, IsCompact and 5 or 8),
-                PaddingRight = UDim.new(0, IsCompact and 5 or 8),
-                PaddingTop = UDim.new(0, IsCompact and 5 or 6),
+                PaddingBottom = UDim.new(0, 5),
+                PaddingLeft = UDim.new(0, 10),
+                PaddingRight = UDim.new(0, 10),
+                PaddingTop = UDim.new(0, 5),
                 Parent = ButtonHolder,
             })
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(26, 0),
-                Size = UDim2.new(1, -26, 1, 0),
+                Position = UDim2.fromOffset(20, 0),
+                Size = UDim2.new(0, 0, 1, 0),
+                AutomaticSize = Enum.AutomaticSize.X,
                 Text = Name,
-                TextSize = 13,
+                TextSize = 12,
                 TextTransparency = 0.5,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Visible = not IsCompact,
@@ -12206,11 +12213,11 @@ function Library:CreateWindow(WindowInfo)
 
             if Icon then
                 TabIcon = New("ImageLabel", {
-                    ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
-                    ImageTransparency = 0.5,
+                    ImageColor3 = "FontColor",
+                    ImageTransparency = 0.35,
                     ScaleType = Enum.ScaleType.Fit,
-                    Size = UDim2.fromScale(1, 1),
-                    SizeConstraint = IsCompact and Enum.SizeConstraint.RelativeXY or Enum.SizeConstraint.RelativeYY,
+                    Position = UDim2.fromOffset(0, 9),
+                    Size = UDim2.fromOffset(16, 16),
                     Parent = ButtonHolder,
                 })
                 Library:ApplyLucideIcon(TabIcon, Icon)
@@ -13605,9 +13612,10 @@ function Library:CreateWindow(WindowInfo)
         Icon = if Icon == "key" then KeyIcon else Library:GetCustomIcon(Icon)
         do
             TabButton = New("TextButton", {
+                AutomaticSize = Enum.AutomaticSize.X,
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(1, 0, 0, 32),
+                Size = UDim2.new(0, 0, 0, 34),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -13619,11 +13627,11 @@ function Library:CreateWindow(WindowInfo)
 
             if TabButtonsStyle.Indicator then
                 TabIndicator = New("Frame", {
-                    AnchorPoint = Vector2.new(1, 0.5),
+                    AnchorPoint = Vector2.new(0.5, 1),
                     BackgroundColor3 = "AccentColor",
                     BackgroundTransparency = 1,
-                    Position = UDim2.new(0, -2, 0.5, 0),
-                    Size = UDim2.fromOffset(TabButtonsStyle.IndicatorWidth, TabButtonsStyle.IndicatorHeight),
+                    Position = UDim2.new(0.5, 0, 1, -1),
+                    Size = UDim2.fromOffset(math.max(22, TabButtonsStyle.IndicatorWidth + 12), 2),
                     Parent = TabButton,
                 })
 
@@ -13639,19 +13647,20 @@ function Library:CreateWindow(WindowInfo)
                 Parent = TabButton,
             })
             local ButtonPadding = New("UIPadding", {
-                PaddingBottom = UDim.new(0, IsCompact and 5 or 6),
-                PaddingLeft = UDim.new(0, IsCompact and 5 or 8),
-                PaddingRight = UDim.new(0, IsCompact and 5 or 8),
-                PaddingTop = UDim.new(0, IsCompact and 5 or 6),
+                PaddingBottom = UDim.new(0, 5),
+                PaddingLeft = UDim.new(0, 10),
+                PaddingRight = UDim.new(0, 10),
+                PaddingTop = UDim.new(0, 5),
                 Parent = ButtonHolder,
             })
 
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(26, 0),
-                Size = UDim2.new(1, -26, 1, 0),
+                Position = UDim2.fromOffset(20, 0),
+                Size = UDim2.new(0, 0, 1, 0),
+                AutomaticSize = Enum.AutomaticSize.X,
                 Text = Name,
-                TextSize = 13,
+                TextSize = 12,
                 TextTransparency = 0.5,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Visible = not IsCompact,
@@ -13660,11 +13669,11 @@ function Library:CreateWindow(WindowInfo)
 
             if Icon then
                 TabIcon = New("ImageLabel", {
-                    ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
-                    ImageTransparency = 0.5,
+                    ImageColor3 = "FontColor",
+                    ImageTransparency = 0.35,
                     ScaleType = Enum.ScaleType.Fit,
-                    Size = UDim2.fromScale(1, 1),
-                    SizeConstraint = IsCompact and Enum.SizeConstraint.RelativeXY or Enum.SizeConstraint.RelativeYY,
+                    Position = UDim2.fromOffset(0, 9),
+                    Size = UDim2.fromOffset(16, 16),
                     Parent = ButtonHolder,
                 })
                 Library:ApplyLucideIcon(TabIcon, Icon)
