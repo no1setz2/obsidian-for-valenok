@@ -1,4 +1,4 @@
-print("lib v.1.9.7")
+print("lib v.1.9.8")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -1800,8 +1800,8 @@ do
     NotificationArea = New("Frame", {
         AnchorPoint = Vector2.new(0.5, 1),
         BackgroundTransparency = 1,
-        Position = UDim2.new(0.5, 0, 1, -30),
-        Size = UDim2.new(0, 400, 0, 1),
+        Position = UDim2.new(0.5, 0, 1, -48),
+        Size = UDim2.new(0, 340, 0, 1),
         ZIndex = 200,
         Parent = ScreenGui,
     })
@@ -10875,18 +10875,26 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
             end
 
             local Height = FakeBackground.AbsoluteSize.Y / Library.DPIScale
-            local Target = UDim2.new(0.5, 0, 1, -RunningY)
+            local Target = UDim2.new(0.5, 0, 1, -(RunningY + 6))
 
             if Snap or not Data.PositionInitialized then
+                if Data.PositionTween then
+                    Data.PositionTween:Cancel()
+                    Data.PositionTween = nil
+                end
                 FakeBackground.Position = Target
                 Data.PositionInitialized = true
             elseif FakeBackground.Position ~= Target then
-                TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
+                if Data.PositionTween then
+                    Data.PositionTween:Cancel()
+                end
+                Data.PositionTween = TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
                     Position = Target,
-                }):Play()
+                })
+                Data.PositionTween:Play()
             end
 
-            RunningY += Height + 8
+            RunningY += Height + 6
         end
         return
     end
@@ -10903,12 +10911,20 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
 
         local Target = UDim2.new(XScale, 0, 0, RunningY)
         if Snap or not Data.PositionInitialized then
+            if Data.PositionTween then
+                Data.PositionTween:Cancel()
+                Data.PositionTween = nil
+            end
             FakeBackground.Position = Target
             Data.PositionInitialized = true
         elseif FakeBackground.Position ~= Target then
-            TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
+            if Data.PositionTween then
+                Data.PositionTween:Cancel()
+            end
+            Data.PositionTween = TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
                 Position = Target,
-            }):Play()
+            })
+            Data.PositionTween:Play()
         end
 
         RunningY += FakeBackground.AbsoluteSize.Y / Library.DPIScale + 8
@@ -10926,8 +10942,8 @@ function Library:SetNotifySide(Side: string)
 
     if LowerSide == "bottom" then
         NotificationArea.AnchorPoint = Vector2.new(0.5, 1)
-        NotificationArea.Position = UDim2.new(0.5, 0, 1, -30)
-        NotificationArea.Size = UDim2.new(0, 400, 0, 1)
+        NotificationArea.Position = UDim2.new(0.5, 0, 1, -48)
+        NotificationArea.Size = UDim2.new(0, 340, 0, 1)
     elseif LowerSide == "left" then
         NotificationArea.AnchorPoint = Vector2.new(0, 0)
         NotificationArea.Position = UDim2.fromOffset(6, 6)
@@ -11010,7 +11026,7 @@ function Library:Notify(...)
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = "MainColor",
         Position = IsBottomNotify
-            and UDim2.new(0, 0, 1, 18)
+            and UDim2.new(0, 0, 1, 14)
             or (Library.NotifySide:lower() == "left" and UDim2.new(-1, -8, 0, 0) or UDim2.new(1, 8, 0, 0)),
         Size = UDim2.new(1, 0, 0, 0),
         ZIndex = 5,
@@ -11202,7 +11218,7 @@ function Library:Notify(...)
 
         local DesiredWidth = math.max(TitleX, DescX) + 24 + ExtraWidth + CloseWidth
         if IsBottomNotify then
-            DesiredWidth = math.clamp(DesiredWidth, 330, 400)
+            DesiredWidth = math.clamp(DesiredWidth, 250, 340)
         end
         FakeBackground.Size = UDim2.fromOffset(DesiredWidth, 0)
 
@@ -11271,7 +11287,7 @@ function Library:Notify(...)
 
         local ExitPosition
         if IsBottomNotify then
-            ExitPosition = UDim2.new(0, 0, 1, 18)
+            ExitPosition = UDim2.new(0, 0, 1, 14)
         else
             ExitPosition = Library.NotifySide:lower() == "left"
                 and UDim2.new(-1, -8, 0, -2)
@@ -11337,7 +11353,7 @@ function Library:Notify(...)
 
     local NotificationTargetPosition = Holder.Position
     if IsBottomNotify then
-        Holder.Position = UDim2.new(0, 0, 1, 18)
+        Holder.Position = UDim2.new(0, 0, 1, 14)
     end
 
     TweenService:Create(Holder, Library.NotifyTweenInfo, {
@@ -11834,7 +11850,7 @@ function Library:CreateWindow(WindowInfo)
             Position = UDim2.fromOffset(0, 57),
             ScrollBarThickness = 0,
             ScrollingDirection = Enum.ScrollingDirection.X,
-            Size = UDim2.new(1, 0, 0, 42),
+            Size = UDim2.new(1, 0, 0, 44),
             Parent = MainFrame,
         })
         New("UIListLayout", {
@@ -11842,18 +11858,18 @@ function Library:CreateWindow(WindowInfo)
             HorizontalFlex = Enum.UIFlexAlignment.Fill,
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
             VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding = UDim.new(0, 2),
+            Padding = UDim.new(0, 0),
             Parent = Tabs,
         })
         New("UIPadding", {
             PaddingBottom = UDim.new(0, 0),
-            PaddingLeft = UDim.new(0, 14),
-            PaddingRight = UDim.new(0, 14),
+            PaddingLeft = UDim.new(0, 18),
+            PaddingRight = UDim.new(0, 18),
             PaddingTop = UDim.new(0, 0),
             Parent = Tabs,
         })
         Library:MakeLine(MainFrame, {
-            Position = UDim2.fromOffset(0, 99),
+            Position = UDim2.fromOffset(0, 100),
             Size = UDim2.new(1, 0, 0, 1),
         })
 
@@ -11865,8 +11881,8 @@ function Library:CreateWindow(WindowInfo)
             end,
             ClipsDescendants = true,
             Name = "Container",
-            Position = UDim2.new(1, 0, 0, 101),
-            Size = UDim2.new(1, 0, 1, -122),
+            Position = UDim2.new(1, 0, 0, 102),
+            Size = UDim2.new(1, 0, 1, -123),
             Parent = MainFrame,
         })
         New("UIPadding", {
@@ -12219,8 +12235,8 @@ function Library:CreateWindow(WindowInfo)
             })
             local ButtonPadding = New("UIPadding", {
                 PaddingBottom = UDim.new(0, 0),
-                PaddingLeft = UDim.new(0, IsCompact and 4 or 6),
-                PaddingRight = UDim.new(0, IsCompact and 4 or 6),
+                PaddingLeft = UDim.new(0, IsCompact and 6 or 10),
+                PaddingRight = UDim.new(0, IsCompact and 6 or 10),
                 PaddingTop = UDim.new(0, 0),
                 Parent = ButtonHolder,
             })
@@ -15157,7 +15173,7 @@ function Library:CreateLoading(LoadingInfo)
         BackgroundTransparency = 0,
         BorderSizePixel = 0,
         AnchorPoint = Vector2.new(0.5, 0),
-        Position = UDim2.new(0.5, 0, 1, -48),
+        Position = UDim2.new(0.5, 0, 1, -30),
         Size = UDim2.new(1, -30, 0, 1),
         Visible = false,
         Parent = ErrorFrame,
