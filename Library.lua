@@ -1,4 +1,4 @@
-print("lib v.1.7.0")
+print("lib v.1.7.1")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -1800,8 +1800,8 @@ do
     NotificationArea = New("Frame", {
         AnchorPoint = Vector2.new(0.5, 1),
         BackgroundTransparency = 1,
-        Position = UDim2.new(0.5, 0, 1, -18),
-        Size = UDim2.new(0, 440, 0, 1),
+        Position = UDim2.new(0.5, 0, 1, -30),
+        Size = UDim2.new(0, 400, 0, 1),
         ZIndex = 200,
         Parent = ScreenGui,
     })
@@ -10926,8 +10926,8 @@ function Library:SetNotifySide(Side: string)
 
     if LowerSide == "bottom" then
         NotificationArea.AnchorPoint = Vector2.new(0.5, 1)
-        NotificationArea.Position = UDim2.new(0.5, 0, 1, -18)
-        NotificationArea.Size = UDim2.new(0, 440, 0, 1)
+        NotificationArea.Position = UDim2.new(0.5, 0, 1, -30)
+        NotificationArea.Size = UDim2.new(0, 400, 0, 1)
     elseif LowerSide == "left" then
         NotificationArea.AnchorPoint = Vector2.new(0, 0)
         NotificationArea.Position = UDim2.fromOffset(6, 6)
@@ -11036,10 +11036,10 @@ function Library:Notify(...)
         Parent = ContentHolder,
     })
     New("UIPadding", {
-        PaddingBottom = UDim.new(0, 8),
-        PaddingLeft = UDim.new(0, 8),
-        PaddingRight = UDim.new(0, 8),
-        PaddingTop = UDim.new(0, 8),
+        PaddingBottom = UDim.new(0, 6),
+        PaddingLeft = UDim.new(0, 7),
+        PaddingRight = UDim.new(0, 7),
+        PaddingTop = UDim.new(0, 6),
         Parent = ContentHolder,
     })
 
@@ -11202,7 +11202,7 @@ function Library:Notify(...)
 
         local DesiredWidth = math.max(TitleX, DescX) + 24 + ExtraWidth + CloseWidth
         if IsBottomNotify then
-            DesiredWidth = math.clamp(DesiredWidth, 360, 420)
+            DesiredWidth = math.clamp(DesiredWidth, 330, 400)
         end
         FakeBackground.Size = UDim2.fromOffset(DesiredWidth, 0)
 
@@ -11498,7 +11498,7 @@ function Library:CreateWindow(WindowInfo)
         )
         Library:AddOutline(MainFrame)
         Library:MakeLine(MainFrame, {
-            Position = UDim2.fromOffset(0, 48),
+            Position = UDim2.fromOffset(0, 56),
             Size = UDim2.new(1, 0, 0, 1),
         })
 
@@ -11564,10 +11564,18 @@ function Library:CreateWindow(WindowInfo)
         --// Top Bar \\-
         TopBar = New("Frame", {
             BackgroundTransparency = 1,
-            Size = UDim2.new(1, 0, 0, 48),
+            Size = UDim2.new(1, 0, 0, 56),
             Parent = MainFrame,
         })
         Library:MakeDraggable(MainFrame, TopBar, false, true, WindowSnapConfig)
+
+        local TopAccent = New("Frame", {
+            BackgroundColor3 = "AccentColor",
+            BorderSizePixel = 0,
+            Position = UDim2.fromOffset(0, 0),
+            Size = UDim2.new(1, 0, 0, 3),
+            Parent = TopBar,
+        })
 
         --// Title \\--
         TitleHolder = New("Frame", {
@@ -11611,7 +11619,7 @@ function Library:CreateWindow(WindowInfo)
             Size = UDim2.fromOffset(0, 1),
             Text = WindowInfo.Title,
             TextColor3 = "FontColor",
-            TextSize = 15,
+            TextSize = 14,
             TextXAlignment = Enum.TextXAlignment.Center,
             Parent = TitleHolder,
         })
@@ -11831,10 +11839,10 @@ function Library:CreateWindow(WindowInfo)
             AutomaticCanvasSize = Enum.AutomaticSize.X,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
-            Position = UDim2.fromOffset(0, 49),
+            Position = UDim2.fromOffset(0, 57),
             ScrollBarThickness = 0,
             ScrollingDirection = Enum.ScrollingDirection.X,
-            Size = UDim2.new(1, 0, 0, 38),
+            Size = UDim2.new(1, 0, 0, 42),
             Parent = MainFrame,
         })
         New("UIListLayout", {
@@ -11861,15 +11869,15 @@ function Library:CreateWindow(WindowInfo)
             end,
             ClipsDescendants = true,
             Name = "Container",
-            Position = UDim2.new(1, 0, 0, 88),
-            Size = UDim2.new(1, 0, 1, -109),
+            Position = UDim2.new(1, 0, 0, 101),
+            Size = UDim2.new(1, 0, 1, -122),
             Parent = MainFrame,
         })
         New("UIPadding", {
             PaddingBottom = UDim.new(0, 5),
             PaddingLeft = UDim.new(0, 10),
             PaddingRight = UDim.new(0, 10),
-            PaddingTop = UDim.new(0, 6),
+            PaddingTop = UDim.new(0, 8),
             Parent = Container,
         })
 
@@ -13020,12 +13028,12 @@ function Library:CreateWindow(WindowInfo)
                 Parent = (Info.Side == 1) and TabLeft or TabRight,
             })
             New("UIListLayout", {
-                Padding = UDim.new(0, 4),
+                Padding = UDim.new(0, 8),
                 Parent = BoxHolder,
             })
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 4),
-                PaddingTop = UDim.new(0, 4),
+                PaddingBottom = UDim.new(0, 6),
+                PaddingTop = UDim.new(0, 6),
                 Parent = BoxHolder,
             })
 
@@ -13050,7 +13058,7 @@ function Library:CreateWindow(WindowInfo)
                 table.insert(
                     Library.Corners,
                     New("UICorner", {
-                        CornerRadius = UDim.new(0, WindowInfo.CornerRadius),
+                        CornerRadius = UDim.new(0, math.min(WindowInfo.CornerRadius, 4)),
                         Parent = GroupboxHolder,
                     })
                 )
@@ -13058,8 +13066,8 @@ function Library:CreateWindow(WindowInfo)
                     Parent = GroupboxHolder,
                 })
                 local GroupboxOutline, GroupboxShadow = Library:AddOutline(GroupboxHolder)
-                GroupboxOutline.Transparency = 0.28
-                GroupboxShadow.Transparency = 0.72
+                GroupboxOutline.Transparency = 0.48
+                GroupboxShadow.Transparency = 0.88
 
                 GroupboxTop = New("Frame", {
                     AutomaticSize = Enum.AutomaticSize.Y,
@@ -13068,10 +13076,10 @@ function Library:CreateWindow(WindowInfo)
                     Parent = GroupboxHolder,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 6),
-                    PaddingLeft = UDim.new(0, 8),
-                    PaddingRight = UDim.new(0, 8),
-                    PaddingTop = UDim.new(0, 6),
+                    PaddingBottom = UDim.new(0, 7),
+                    PaddingLeft = UDim.new(0, 9),
+                    PaddingRight = UDim.new(0, 9),
+                    PaddingTop = UDim.new(0, 7),
                     Parent = GroupboxTop,
                 })
 
@@ -13165,14 +13173,14 @@ function Library:CreateWindow(WindowInfo)
                 })
 
                 GroupboxList = New("UIListLayout", {
-                    Padding = UDim.new(0, 5),
+                    Padding = UDim.new(0, 6),
                     Parent = GroupboxContainer,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 7),
-                    PaddingLeft = UDim.new(0, 8),
-                    PaddingRight = UDim.new(0, 8),
-                    PaddingTop = UDim.new(0, 7),
+                    PaddingBottom = UDim.new(0, 8),
+                    PaddingLeft = UDim.new(0, 9),
+                    PaddingRight = UDim.new(0, 9),
+                    PaddingTop = UDim.new(0, 8),
                     Parent = GroupboxContainer,
                 })
             end
