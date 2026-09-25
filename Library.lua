@@ -1,4 +1,4 @@
-print("lib v2.0.2b")
+print("lib v2.0.3b")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -168,7 +168,7 @@ local AspectTheme = {
     OutlineColor = Color3.fromRGB(26, 25, 25),       -- #1a1919
     FontColor = Color3.fromRGB(164, 164, 164),       -- #a4a4a4
 
-    Font = Font.fromEnum(Enum.Font.Code),
+    Font = Font.fromEnum(Enum.Font.SourceSansBold),
     RedColor = Color3.fromRGB(238, 88, 88),
     DestructiveColor = Color3.fromRGB(214, 74, 74),
     DarkColor = Color3.fromRGB(3, 3, 3),
@@ -403,7 +403,7 @@ local Templates = {
         NotifySide = "Right",
         ShowCustomCursor = true,
 
-        Font = Enum.Font.Code,
+        Font = Enum.Font.SourceSansBold,
         ToggleKeybind = Enum.KeyCode.RightControl,
 
         ShowMobileButtons = true,
