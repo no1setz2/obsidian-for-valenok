@@ -1,4 +1,4 @@
-print("lib v2.0.0n")
+print("lib v2.0.1n")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -161,12 +161,12 @@ do
     end
 end
 
-local ValenokTheme = {
+local AspectTheme = {
     BackgroundColor = Color3.fromRGB(8, 8, 8),
-    MainColor = Color3.fromRGB(18, 18, 18),
-    AccentColor = Color3.fromRGB(238, 88, 88),
-    OutlineColor = Color3.fromRGB(38, 38, 38),
-    FontColor = Color3.fromRGB(224, 224, 224),
+    MainColor = Color3.fromRGB(15, 15, 15),
+    AccentColor = Color3.fromRGB(232, 232, 232),
+    OutlineColor = Color3.fromRGB(36, 36, 36),
+    FontColor = Color3.fromRGB(218, 218, 218),
     Font = Font.fromEnum(Enum.Font.Code),
     RedColor = Color3.fromRGB(238, 88, 88),
     DestructiveColor = Color3.fromRGB(214, 74, 74),
@@ -291,7 +291,7 @@ local Library = {
 
     --// Scheme \\--
     IsLightTheme = false,
-    Scheme = ValenokTheme,
+    Scheme = AspectTheme,
 
     --// Registry \\--
     Registry = {},
@@ -374,13 +374,13 @@ local Templates = {
 
     --// Library \\--
     Window = {
-        Title = "",
-        Subtitle = "",
-        Footer = "",
+        Title = "aspect.sys",
+        Subtitle = "Roblox Script",
+        Footer = "aspect.sys",
 
         Position = UDim2.fromOffset(6, 6),
         Size = UDim2.fromOffset(985, 570),
-        IconSize = UDim2.fromOffset(22, 22),
+        IconSize = UDim2.fromOffset(18, 18),
 
         AutoShow = true,
         Center = true,
@@ -393,9 +393,9 @@ local Templates = {
         SnapMargin = 8,
         SnapAvoidCoreGui = true,
 
-        SearchbarSize = UDim2.fromOffset(195, 0),
-        SearchbarHeight = 30,
-        SearchbarCornerRadius = 5,
+        SearchbarSize = UDim2.fromOffset(180, 0),
+        SearchbarHeight = 28,
+        SearchbarCornerRadius = 4,
         GlobalSearch = false,
 
         CornerRadius = 3,
@@ -440,12 +440,12 @@ local Templates = {
         TabSwipeOffset = 26,
         TabSwipeFrom = "bottom",
         TabButtonsStyle = {
-            Gap = 2,
-            Padding = 4,
-            CornerRadius = 3,
+            Gap = 4,
+            Padding = 6,
+            CornerRadius = 2,
             Indicator = true,
             IndicatorWidth = 3,
-            IndicatorHeight = 20,
+            IndicatorHeight = 2,
         },
     },
     Groupbox = {
@@ -11530,7 +11530,7 @@ function Library:CreateWindow(WindowInfo)
         )
         Library:AddOutline(MainFrame)
         Library:MakeLine(MainFrame, {
-            Position = UDim2.fromOffset(0, 56),
+            Position = UDim2.fromOffset(0, 44),
             Size = UDim2.new(1, 0, 0, 1),
         })
 
@@ -11596,7 +11596,7 @@ function Library:CreateWindow(WindowInfo)
         --// Top Bar \\-
         TopBar = New("Frame", {
             BackgroundTransparency = 1,
-            Size = UDim2.new(1, 0, 0, 56),
+            Size = UDim2.new(1, 0, 0, 44),
             Parent = MainFrame,
         })
         Library:MakeDraggable(MainFrame, TopBar, false, true, WindowSnapConfig)
@@ -11606,7 +11606,7 @@ function Library:CreateWindow(WindowInfo)
             AnchorPoint = Vector2.new(0.5, 0),
             BackgroundTransparency = 1,
             Position = UDim2.fromScale(0.5, 0),
-            Size = UDim2.new(1, -220, 1, 0),
+            Size = UDim2.new(1, -190, 1, 0),
             Parent = TopBar,
         })
         New("UIListLayout", {
@@ -11643,7 +11643,7 @@ function Library:CreateWindow(WindowInfo)
             Size = UDim2.fromOffset(0, 1),
             Text = WindowInfo.Title,
             TextColor3 = "FontColor",
-            TextSize = 14,
+            TextSize = 13,
             TextXAlignment = Enum.TextXAlignment.Center,
             Parent = TitleHolder,
         })
@@ -11652,8 +11652,8 @@ function Library:CreateWindow(WindowInfo)
         RightWrapper = New("Frame", {
             AnchorPoint = Vector2.new(1, 0.5),
             BackgroundTransparency = 1,
-            Position = UDim2.new(1, -10, 0.5, 0),
-            Size = UDim2.fromOffset(205, 32),
+            Position = UDim2.new(1, -8, 0.5, 0),
+            Size = UDim2.fromOffset(190, 28),
             Parent = TopBar,
         })
 
@@ -11716,12 +11716,12 @@ function Library:CreateWindow(WindowInfo)
 
         SearchHolder = New("Frame", {
             BackgroundColor3 = "MainColor",
-            Size = UDim2.new(WindowInfo.SearchbarSize.X.Scale, WindowInfo.SearchbarSize.X.Offset, 0, WindowInfo.SearchbarHeight or 30),
+            Size = UDim2.new(WindowInfo.SearchbarSize.X.Scale, WindowInfo.SearchbarSize.X.Offset, 0, WindowInfo.SearchbarHeight or 28),
             Visible = not (WindowInfo.DisableSearch or false),
             Parent = RightWrapper,
         })
         table.insert(Library.Corners, New("UICorner", {
-            CornerRadius = UDim.new(0, WindowInfo.SearchbarCornerRadius or 15),
+            CornerRadius = UDim.new(0, WindowInfo.SearchbarCornerRadius or 4),
             Parent = SearchHolder,
         }))
         local SearchBoxStroke = New("UIStroke", {
@@ -11742,7 +11742,7 @@ function Library:CreateWindow(WindowInfo)
             Parent = SearchHolder,
         })
         New("UIPadding", {
-            PaddingLeft = UDim.new(0, 30),
+            PaddingLeft = UDim.new(0, 28),
             PaddingRight = UDim.new(0, 8),
             Parent = SearchBox,
         })
@@ -11753,8 +11753,8 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
                 ImageColor3 = "FontColor",
                 ImageTransparency = 0.45,
-                Position = UDim2.fromOffset(8, 7),
-                Size = UDim2.fromOffset(16, 16),
+                Position = UDim2.fromOffset(7, 6),
+                Size = UDim2.fromOffset(15, 15),
                 ZIndex = SearchBox.ZIndex + 1,
                 Parent = SearchHolder,
             })
@@ -11762,8 +11762,8 @@ function Library:CreateWindow(WindowInfo)
         else
             SearchIconImage = New("TextLabel", {
                 BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(8, 5),
-                Size = UDim2.fromOffset(17, 19),
+                Position = UDim2.fromOffset(7, 4),
+                Size = UDim2.fromOffset(16, 19),
                 Text = "⌕",
                 TextColor3 = "FontColor",
                 TextSize = 16,
@@ -11863,29 +11863,29 @@ function Library:CreateWindow(WindowInfo)
             AutomaticCanvasSize = Enum.AutomaticSize.X,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
-            Position = UDim2.fromOffset(0, 57),
+            Position = UDim2.fromOffset(0, 45),
             ScrollBarThickness = 0,
             ScrollingDirection = Enum.ScrollingDirection.X,
-            Size = UDim2.new(1, 0, 0, 44),
+            Size = UDim2.new(1, 0, 0, 38),
             Parent = MainFrame,
         })
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalFlex = Enum.UIFlexAlignment.Fill,
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
             VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding = UDim.new(0, 0),
+            Padding = UDim.new(0, TabButtonsStyle.Gap or 4),
+            SortOrder = Enum.SortOrder.LayoutOrder,
             Parent = Tabs,
         })
         New("UIPadding", {
             PaddingBottom = UDim.new(0, 0),
-            PaddingLeft = UDim.new(0, 0),
-            PaddingRight = UDim.new(0, 0),
+            PaddingLeft = UDim.new(0, 6),
+            PaddingRight = UDim.new(0, 6),
             PaddingTop = UDim.new(0, 0),
             Parent = Tabs,
         })
         Library:MakeLine(MainFrame, {
-            Position = UDim2.fromOffset(0, 100),
+            Position = UDim2.fromOffset(0, 83),
             Size = UDim2.new(1, 0, 0, 1),
         })
 
@@ -11897,8 +11897,8 @@ function Library:CreateWindow(WindowInfo)
             end,
             ClipsDescendants = true,
             Name = "Container",
-            Position = UDim2.new(1, 0, 0, 102),
-            Size = UDim2.new(1, 0, 1, -123),
+            Position = UDim2.new(1, 0, 0, 85),
+            Size = UDim2.new(1, 0, 1, -106),
             Parent = MainFrame,
         })
         New("UIPadding", {
@@ -12211,10 +12211,15 @@ function Library:CreateWindow(WindowInfo)
 
         Icon = Library:GetCustomIcon(Icon)
         do
+            local TabTextWidth = Library:GetTextBounds(Name, WindowInfo.Font, 13)
+            local TabHorizontalPadding = IsCompact and 6 or (TabButtonsStyle.Padding or 6)
+            local TabContentWidth = math.ceil(TabTextWidth) + (Icon and 14 or 0) + (Icon and 6 or 0) + (TabHorizontalPadding * 2)
+            local TabButtonWidth = math.max(74, TabContentWidth)
+
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 0, 1, 0),
+                Size = UDim2.new(0, TabButtonWidth, 1, 0),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -12223,11 +12228,6 @@ function Library:CreateWindow(WindowInfo)
                 CornerRadius = UDim.new(0, 0),
                 Parent = TabButton,
             })
-            New("UIFlexItem", {
-                FlexMode = Enum.UIFlexMode.Grow,
-                Parent = TabButton,
-            })
-
             if TabButtonsStyle.Indicator then
                 TabIndicator = New("Frame", {
                     AnchorPoint = Vector2.new(0.5, 1),
@@ -12251,8 +12251,8 @@ function Library:CreateWindow(WindowInfo)
             })
             local ButtonPadding = New("UIPadding", {
                 PaddingBottom = UDim.new(0, 0),
-                PaddingLeft = UDim.new(0, IsCompact and 6 or 10),
-                PaddingRight = UDim.new(0, IsCompact and 6 or 10),
+                PaddingLeft = UDim.new(0, TabHorizontalPadding),
+                PaddingRight = UDim.new(0, TabHorizontalPadding),
                 PaddingTop = UDim.new(0, 0),
                 Parent = ButtonHolder,
             })
@@ -13686,10 +13686,15 @@ function Library:CreateWindow(WindowInfo)
 
         Icon = if Icon == "key" then KeyIcon else Library:GetCustomIcon(Icon)
         do
+            local TabTextWidth = Library:GetTextBounds(Name, WindowInfo.Font, 13)
+            local TabHorizontalPadding = IsCompact and 6 or (TabButtonsStyle.Padding or 6)
+            local TabContentWidth = math.ceil(TabTextWidth) + (Icon and 14 or 0) + (Icon and 6 or 0) + (TabHorizontalPadding * 2)
+            local TabButtonWidth = math.max(74, TabContentWidth)
+
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 0, 1, 0),
+                Size = UDim2.new(0, TabButtonWidth, 1, 0),
                 Text = "",
                 LayoutOrder = Order,
                 Parent = Tabs,
@@ -13698,11 +13703,6 @@ function Library:CreateWindow(WindowInfo)
                 CornerRadius = UDim.new(0, 0),
                 Parent = TabButton,
             })
-            New("UIFlexItem", {
-                FlexMode = Enum.UIFlexMode.Grow,
-                Parent = TabButton,
-            })
-
             if TabButtonsStyle.Indicator then
                 TabIndicator = New("Frame", {
                     AnchorPoint = Vector2.new(0.5, 1),
@@ -13726,8 +13726,8 @@ function Library:CreateWindow(WindowInfo)
             })
             local ButtonPadding = New("UIPadding", {
                 PaddingBottom = UDim.new(0, 0),
-                PaddingLeft = UDim.new(0, IsCompact and 6 or 10),
-                PaddingRight = UDim.new(0, IsCompact and 6 or 10),
+                PaddingLeft = UDim.new(0, TabHorizontalPadding),
+                PaddingRight = UDim.new(0, TabHorizontalPadding),
                 PaddingTop = UDim.new(0, 0),
                 Parent = ButtonHolder,
             })
