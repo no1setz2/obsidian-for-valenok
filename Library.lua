@@ -162,11 +162,12 @@ do
 end
 
 local AspectTheme = {
-    BackgroundColor = Color3.fromRGB(8, 8, 8),
-    MainColor = Color3.fromRGB(15, 15, 15),
-    AccentColor = Color3.fromRGB(232, 232, 232),
-    OutlineColor = Color3.fromRGB(36, 36, 36),
-    FontColor = Color3.fromRGB(218, 218, 218),
+    BackgroundColor = Color3.fromRGB(15, 15, 15),   -- #0f0f0f
+    MainColor = Color3.fromRGB(26, 25, 25),          -- #1a1919
+    AccentColor = Color3.fromRGB(93, 93, 93),        -- #5d5d5d
+    OutlineColor = Color3.fromRGB(26, 25, 25),       -- #1a1919
+    FontColor = Color3.fromRGB(164, 164, 164),       -- #a4a4a4
+
     Font = Font.fromEnum(Enum.Font.Code),
     RedColor = Color3.fromRGB(238, 88, 88),
     DestructiveColor = Color3.fromRGB(214, 74, 74),
