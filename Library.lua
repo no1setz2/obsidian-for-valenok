@@ -11596,7 +11596,8 @@ function Library:CreateWindow(WindowInfo)
 
         --// Top Bar \\-
         TopBar = New("Frame", {
-            BackgroundTransparency = 1,
+            BackgroundColor3 = "MainColor",
+            BackgroundTransparency = 0.45,
             Size = UDim2.new(1, 0, 0, 44),
             Parent = MainFrame,
         })
@@ -11604,24 +11605,28 @@ function Library:CreateWindow(WindowInfo)
 
         --// Title \\--
         TitleHolder = New("Frame", {
-            AnchorPoint = Vector2.new(0.5, 0),
+            AnchorPoint = Vector2.new(0, 0),
             BackgroundTransparency = 1,
-            Position = UDim2.fromScale(0.5, 0),
-            Size = UDim2.new(1, -190, 1, 0),
+            Position = UDim2.fromOffset(0, 0),
+            Size = UDim2.new(0, 360, 1, 0),
             Parent = TopBar,
         })
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            HorizontalAlignment = Enum.HorizontalAlignment.Left,
             VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding = UDim.new(0, 8),
+            Padding = UDim.new(0, 10),
+            Parent = TitleHolder,
+        })
+        New("UIPadding", {
+            PaddingLeft = UDim.new(0, 12),
             Parent = TitleHolder,
         })
 
         if WindowInfo.Icon then
             local Icon = Library:GetCustomIcon(WindowInfo.Icon)
             WindowIcon = New("ImageLabel", {
-                Size = WindowInfo.IconSize,
+                Size = UDim2.fromOffset(24, 24),
                 Parent = TitleHolder,
             })
             if Icon then
@@ -11644,8 +11649,8 @@ function Library:CreateWindow(WindowInfo)
             Size = UDim2.fromOffset(0, 1),
             Text = WindowInfo.Title,
             TextColor3 = "FontColor",
-            TextSize = 13,
-            TextXAlignment = Enum.TextXAlignment.Center,
+            TextSize = 15,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = TitleHolder,
         })
 
