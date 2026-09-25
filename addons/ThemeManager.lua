@@ -462,8 +462,8 @@ function ThemeManager:SetDefaultTheme(Theme: any)
         FinalTheme.FontFace = FontFace
     
     else
-        LibraryScheme.Font = Font.fromEnum(Enum.Font.Code)
-        FinalTheme.FontFace = "Code"
+        LibraryScheme.Font = Font.fromEnum(Enum.Font.SourceSansBold)
+        FinalTheme.FontFace = "SourceSansBold"
     end
 
     --// Default Scheme Colors
