@@ -1,4 +1,4 @@
-print("lib v2.0.6b")
+print("lib v2.0.7b")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -164,6 +164,7 @@ end
 local AspectTheme = {
     BackgroundColor = Color3.fromRGB(15, 15, 15),
     MainColor = Color3.fromRGB(26, 25, 25),
+    SearchColor = Color3.fromRGB(9, 9, 9),
     AccentColor = Color3.fromRGB(93, 93, 93),
     OutlineColor = Color3.fromRGB(26, 25, 25),
     FontColor = Color3.fromRGB(164, 164, 164),
@@ -406,10 +407,10 @@ local Templates = {
 
         SearchbarSize = UDim2.fromOffset(200, 0),
         SearchbarHeight = 30,
-        SearchbarCornerRadius = 4,
+        SearchbarCornerRadius = 2,
         GlobalSearch = false,
 
-        CornerRadius = 4,
+        CornerRadius = 3,
         NotifySide = "Right",
         ShowCustomCursor = true,
 
@@ -453,7 +454,7 @@ local Templates = {
         TabButtonsStyle = {
             Gap = 4,
             Padding = 6,
-            CornerRadius = 3,
+            CornerRadius = 2,
             Indicator = true,
             IndicatorWidth = 34,
             IndicatorHeight = 2,
@@ -11544,7 +11545,7 @@ function Library:CreateWindow(WindowInfo)
     )
     -- Keep every control on SourceSansBold, regardless of the window config.
     WindowInfo.Font = Font.fromEnum(Enum.Font.SourceSansBold)
-    WindowInfo.CornerRadius = math.min(WindowInfo.CornerRadius, 5)
+    WindowInfo.CornerRadius = math.min(WindowInfo.CornerRadius, 3)
 
     local TabButtonsStyle = WindowInfo.TabButtonsStyle
     WindowInfo.EnableSidebarResize = false
@@ -11568,7 +11569,7 @@ function Library:CreateWindow(WindowInfo)
     WindowInfo.NotifySide = "Right"
     Library:SetNotifySide("Right")
     Library.ShowCustomCursor = WindowInfo.ShowCustomCursor
-    Library.Scheme.Font = WindowInfo.Font
+    Library.Scheme.Font = Font.fromEnum(Enum.Font.SourceSansBold)
     Library.ToggleKeybind = WindowInfo.ToggleKeybind
     Library.GlobalSearch = WindowInfo.GlobalSearch
 
@@ -11719,7 +11720,7 @@ function Library:CreateWindow(WindowInfo)
         Library:MakeDraggable(MainFrame, TopBar, false, true, WindowSnapConfig)
 
         table.insert(Library.Corners, New("UICorner", {
-            CornerRadius = UDim.new(0, math.max(4, WindowInfo.CornerRadius - 2)),
+            CornerRadius = UDim.new(0, math.max(2, WindowInfo.CornerRadius - 1)),
             Parent = TopBar,
         }))
 
@@ -11865,7 +11866,7 @@ function Library:CreateWindow(WindowInfo)
         })
 
         SearchHolder = New("Frame", {
-            BackgroundColor3 = "MainColor",
+            BackgroundColor3 = "SearchColor",
             Size = UDim2.new(WindowInfo.SearchbarSize.X.Scale, WindowInfo.SearchbarSize.X.Offset, 0, WindowInfo.SearchbarHeight or 28),
             Visible = not (WindowInfo.DisableSearch or false),
             Parent = RightWrapper,
@@ -11876,7 +11877,17 @@ function Library:CreateWindow(WindowInfo)
         }))
         local SearchBoxStroke = New("UIStroke", {
             Color = "OutlineColor",
-            Transparency = 0.1,
+            Transparency = 0.05,
+            Thickness = 1,
+            Parent = SearchHolder,
+        })
+
+        local SearchTopDetail = New("Frame", {
+            BackgroundColor3 = "MainColor",
+            BackgroundTransparency = 0.3,
+            Position = UDim2.fromOffset(8, 1),
+            Size = UDim2.new(1, -16, 0, 1),
+            ZIndex = SearchHolder.ZIndex + 1,
             Parent = SearchHolder,
         })
 
@@ -11892,7 +11903,7 @@ function Library:CreateWindow(WindowInfo)
             Parent = SearchHolder,
         })
         New("UIPadding", {
-            PaddingLeft = UDim.new(0, 31),
+            PaddingLeft = UDim.new(0, 30),
             PaddingRight = UDim.new(0, 10),
             Parent = SearchBox,
         })
@@ -11903,8 +11914,8 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
                 ImageColor3 = "FontColor",
                 ImageTransparency = 0.45,
-                Position = UDim2.fromOffset(8, 7),
-                Size = UDim2.fromOffset(16, 16),
+                Position = UDim2.fromOffset(9, 7),
+                Size = UDim2.fromOffset(15, 15),
                 ZIndex = SearchBox.ZIndex + 1,
                 Parent = SearchHolder,
             })
@@ -12037,6 +12048,14 @@ function Library:CreateWindow(WindowInfo)
         Library:MakeLine(MainFrame, {
             Position = UDim2.fromOffset(0, 89),
             Size = UDim2.new(1, 0, 0, 1),
+        })
+        New("Frame", {
+            BackgroundColor3 = "MainColor",
+            BackgroundTransparency = 0.2,
+            Position = UDim2.fromOffset(10, 89),
+            Size = UDim2.new(1, -20, 0, 1),
+            ZIndex = 2,
+            Parent = MainFrame,
         })
 
         --// Container \\--
@@ -12395,8 +12414,8 @@ function Library:CreateWindow(WindowInfo)
                     AnchorPoint = Vector2.new(0.5, 1),
                     BackgroundColor3 = "AccentColor",
                     BackgroundTransparency = 1,
-                    Position = UDim2.new(0.5, 0, 1, -2),
-                    Size = UDim2.new(0, TabButtonsStyle.IndicatorWidth or 30, 0, TabButtonsStyle.IndicatorHeight or 2),
+                    Position = UDim2.new(0.5, 0, 1, -1),
+                    Size = UDim2.new(0, TabButtonsStyle.IndicatorWidth or 32, 0, TabButtonsStyle.IndicatorHeight or 2),
                     Parent = TabButton,
                 })
 
@@ -12428,15 +12447,22 @@ function Library:CreateWindow(WindowInfo)
             })
 
             if Icon then
+                local TabIconSlot = New("Frame", {
+                    BackgroundTransparency = 1,
+                    LayoutOrder = 1,
+                    Size = UDim2.fromOffset(18, 18),
+                    Parent = ButtonHolder,
+                })
                 TabIcon = New("ImageLabel", {
+                    AnchorPoint = Vector2.new(0.5, 0.5),
                     BackgroundTransparency = 1,
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
                     ImageTransparency = 0.5,
-                    LayoutOrder = 1,
+                    Position = UDim2.fromScale(0.5, 0.5),
                     ScaleType = Enum.ScaleType.Fit,
-                    Size = UDim2.fromOffset(14, 14),
+                    Size = UDim2.fromOffset(15, 15),
                     Visible = true,
-                    Parent = ButtonHolder,
+                    Parent = TabIconSlot,
                 })
                 Library:ApplyLucideIcon(TabIcon, Icon)
             end
@@ -13290,7 +13316,7 @@ function Library:CreateWindow(WindowInfo)
                     local GroupboxHeaderIcon = New("ImageLabel", {
                         AnchorPoint = Vector2.new(0, 0.5),
                         ImageColor3 = BoxIcon.Custom and "WhiteColor" or "AccentColor",
-                        Position = UDim2.fromScale(0, 0.5),
+                        Position = UDim2.fromOffset(10, 0),
                         Size = UDim2.fromOffset(17, 17),
                         Parent = GroupboxTop,
                     })
@@ -13301,8 +13327,8 @@ function Library:CreateWindow(WindowInfo)
                 local TextsFrame = New("Frame", {
                     AutomaticSize = Enum.AutomaticSize.Y,
                     BackgroundTransparency = 1,
-                    Position = UDim2.fromOffset(BoxIcon and 20 or 0, 0),
-                    Size = UDim2.new(1, -RightInset - (BoxIcon and 20 or 0), 0, 0),
+                    Position = UDim2.fromOffset(BoxIcon and 33 or 0, 0),
+                    Size = UDim2.new(1, -RightInset - (BoxIcon and 33 or 0), 0, 0),
                     Parent = GroupboxTop,
                 })
                 New("UIListLayout", {
@@ -13336,8 +13362,8 @@ function Library:CreateWindow(WindowInfo)
                     AnchorPoint = Vector2.new(0, 0.5),
                     BackgroundColor3 = "AccentColor",
                     BackgroundTransparency = 0.2,
-                    Position = UDim2.fromOffset(2, 0.5),
-                    Size = UDim2.fromOffset(2, 16),
+                    Position = UDim2.fromOffset(8, 0.5),
+                    Size = UDim2.fromOffset(1, 18),
                     Parent = GroupboxTop,
                 })
 
@@ -13634,8 +13660,11 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabLabel, Library.TweenInfo, {
                 TextTransparency = Hovering and 0.25 or 0.5,
             }):Play()
+            TweenService:Create(TabButton, Library.TweenInfo, {
+                BackgroundTransparency = Hovering and 0.88 or 1,
+            }):Play()
             TweenService:Create(TabStroke, Library.TweenInfo, {
-                Transparency = Hovering and 0.55 or 1,
+                Transparency = Hovering and 0.62 or 1,
             }):Play()
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -13654,7 +13683,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0.9,
+                BackgroundTransparency = 0.72,
             }):Play()
             TweenService:Create(TabStroke, Library.TweenInfo, {
                 Transparency = 0.35,
@@ -13896,8 +13925,8 @@ function Library:CreateWindow(WindowInfo)
                     AnchorPoint = Vector2.new(0.5, 1),
                     BackgroundColor3 = "AccentColor",
                     BackgroundTransparency = 1,
-                    Position = UDim2.new(0.5, 0, 1, -2),
-                    Size = UDim2.new(0, TabButtonsStyle.IndicatorWidth or 30, 0, TabButtonsStyle.IndicatorHeight or 2),
+                    Position = UDim2.new(0.5, 0, 1, -1),
+                    Size = UDim2.new(0, TabButtonsStyle.IndicatorWidth or 32, 0, TabButtonsStyle.IndicatorHeight or 2),
                     Parent = TabButton,
                 })
 
@@ -13929,15 +13958,22 @@ function Library:CreateWindow(WindowInfo)
             })
 
             if Icon then
+                local TabIconSlot = New("Frame", {
+                    BackgroundTransparency = 1,
+                    LayoutOrder = 1,
+                    Size = UDim2.fromOffset(18, 18),
+                    Parent = ButtonHolder,
+                })
                 TabIcon = New("ImageLabel", {
+                    AnchorPoint = Vector2.new(0.5, 0.5),
                     BackgroundTransparency = 1,
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
                     ImageTransparency = 0.5,
-                    LayoutOrder = 1,
+                    Position = UDim2.fromScale(0.5, 0.5),
                     ScaleType = Enum.ScaleType.Fit,
-                    Size = UDim2.fromOffset(14, 14),
+                    Size = UDim2.fromOffset(15, 15),
                     Visible = true,
-                    Parent = ButtonHolder,
+                    Parent = TabIconSlot,
                 })
                 Library:ApplyLucideIcon(TabIcon, Icon)
             end
@@ -14132,8 +14168,11 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabLabel, Library.TweenInfo, {
                 TextTransparency = Hovering and 0.25 or 0.5,
             }):Play()
+            TweenService:Create(TabButton, Library.TweenInfo, {
+                BackgroundTransparency = Hovering and 0.88 or 1,
+            }):Play()
             TweenService:Create(TabStroke, Library.TweenInfo, {
-                Transparency = Hovering and 0.55 or 1,
+                Transparency = Hovering and 0.62 or 1,
             }):Play()
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -14152,7 +14191,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0.9,
+                BackgroundTransparency = 0.72,
             }):Play()
             TweenService:Create(TabStroke, Library.TweenInfo, {
                 Transparency = 0.35,
