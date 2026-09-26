@@ -1,4 +1,4 @@
-print("lib v2.0.5b")
+print("lib v2.0.6b")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -1809,10 +1809,11 @@ local NotificationArea
 local NotifyOrder = {}
 do
     NotificationArea = New("Frame", {
-        AnchorPoint = Vector2.new(0.5, 1),
+        AnchorPoint = Vector2.new(1, 0),
         BackgroundTransparency = 1,
-        Position = UDim2.new(0.5, 0, 1, -48),
-        Size = UDim2.new(0, 300, 0, 1),
+        Position = UDim2.new(1, -14, 0, 58),
+        Size = UDim2.new(0, 360, 1, -72),
+        ClipsDescendants = false,
         ZIndex = 200,
         Parent = ScreenGui,
     })
@@ -10867,13 +10868,9 @@ do
     end
 end
 
-function Library:SetFont(FontFace)
-    if typeof(FontFace) == "EnumItem" then
-        FontFace = Font.fromEnum(FontFace :: any)
-    elseif typeof(FontFace) ~= "Font" then
-        return false
-    end
-
+function Library:SetFont(_)
+    -- aspect.sys uses one consistent font throughout the entire UI.
+    local FontFace = Font.fromEnum(Enum.Font.SourceSansBold)
     Library.Scheme.Font = FontFace
     Library:UpdateColorsUsingRegistry()
     return true
@@ -10891,7 +10888,7 @@ function Library:SetBackgroundImage(Image: string | number)
 end
 
 function Library:UpdateNotificationPositions(Snap: boolean?)
-    local Side = Library.NotifySide:lower()
+    local Side = tostring(Library.NotifySide or "Right"):lower()
 
     for Index = #NotifyOrder, 1, -1 do
         local FakeBackground = NotifyOrder[Index]
@@ -10903,7 +10900,7 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
 
     if Side == "bottom" then
         local RunningY = 0
-        local Gap = 4
+        local Gap = 8
         local BottomMargin = 24
 
         for Index = #NotifyOrder, 1, -1 do
@@ -10921,18 +10918,13 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
             end
 
             local Target = UDim2.new(0.5, 0, 1, -(BottomMargin + RunningY))
-
             if Snap or not Data.PositionInitialized then
-                if Data.PositionTween then
-                    Data.PositionTween:Cancel()
-                    Data.PositionTween = nil
-                end
+                StopTween(Data.PositionTween, true)
+                Data.PositionTween = nil
                 FakeBackground.Position = Target
                 Data.PositionInitialized = true
             elseif FakeBackground.Position ~= Target then
-                if Data.PositionTween then
-                    Data.PositionTween:Cancel()
-                end
+                StopTween(Data.PositionTween, true)
                 Data.PositionTween = TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
                     Position = Target,
                 })
@@ -10947,6 +10939,7 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
     local IsLeft = Side == "left"
     local XScale = IsLeft and 0 or 1
     local RunningY = 0
+    local Gap = 8
 
     for _, FakeBackground in NotifyOrder do
         local Data = Library.Notifications[FakeBackground]
@@ -10955,59 +10948,68 @@ function Library:UpdateNotificationPositions(Snap: boolean?)
         end
 
         local Height = FakeBackground.AbsoluteSize.Y / math.max(Library.DPIScale, 0.001)
-        local Target = UDim2.new(XScale, 0, 0, RunningY)
+        if Height <= 0 then
+            Height = Data.LastHeight or 0
+        else
+            Data.LastHeight = Height
+        end
 
+        local Target = UDim2.new(XScale, 0, 0, RunningY)
         if Snap or not Data.PositionInitialized then
-            if Data.PositionTween then
-                Data.PositionTween:Cancel()
-                Data.PositionTween = nil
-            end
+            StopTween(Data.PositionTween, true)
+            Data.PositionTween = nil
             FakeBackground.Position = Target
             Data.PositionInitialized = true
         elseif FakeBackground.Position ~= Target then
-            if Data.PositionTween then
-                Data.PositionTween:Cancel()
-            end
+            StopTween(Data.PositionTween, true)
             Data.PositionTween = TweenService:Create(FakeBackground, Library.NotifyTweenInfo, {
                 Position = Target,
             })
             Data.PositionTween:Play()
         end
 
-        RunningY += Height + 6
+        RunningY += Height + Gap
     end
 end
 
 function Library:SetNotifySide(Side: string)
-    Side = tostring(Side or "Bottom")
+    Side = tostring(Side or "Right")
     local LowerSide = Side:lower()
     if LowerSide ~= "left" and LowerSide ~= "right" and LowerSide ~= "bottom" then
-        LowerSide = "bottom"
+        LowerSide = "right"
     end
 
-    Library.NotifySide = LowerSide == "bottom" and "Bottom" or LowerSide
+    Library.NotifySide = LowerSide == "bottom"
+        and "Bottom"
+        or (LowerSide == "left" and "Left" or "Right")
 
     if LowerSide == "bottom" then
         NotificationArea.AnchorPoint = Vector2.new(0.5, 1)
-        NotificationArea.Position = UDim2.new(0.5, 0, 1, -48)
-        NotificationArea.Size = UDim2.new(0, 300, 0, 1)
+        NotificationArea.Position = UDim2.new(0.5, 0, 1, -24)
+        NotificationArea.Size = UDim2.new(0, 360, 0, 2)
     elseif LowerSide == "left" then
         NotificationArea.AnchorPoint = Vector2.new(0, 0)
-        NotificationArea.Position = UDim2.fromOffset(6, 6)
-        NotificationArea.Size = UDim2.new(0, 440, 1, -6)
+        NotificationArea.Position = UDim2.fromOffset(14, 58)
+        NotificationArea.Size = UDim2.new(0, 360, 1, -72)
     else
         NotificationArea.AnchorPoint = Vector2.new(1, 0)
-        NotificationArea.Position = UDim2.new(1, -6, 0, 6)
-        NotificationArea.Size = UDim2.new(0, 440, 1, -6)
+        NotificationArea.Position = UDim2.new(1, -14, 0, 58)
+        NotificationArea.Size = UDim2.new(0, 360, 1, -72)
     end
 
     for FakeBackground in Library.Notifications do
         if not (FakeBackground and FakeBackground.Parent) then
             continue
         end
-        FakeBackground.AnchorPoint = LowerSide == "bottom"
+
+        local IsBottom = LowerSide == "bottom"
+        FakeBackground.AnchorPoint = IsBottom
             and Vector2.new(0.5, 1)
             or (LowerSide == "left" and Vector2.new(0, 0) or Vector2.new(1, 0))
+
+        if not IsBottom then
+            FakeBackground.Size = UDim2.fromOffset(360, FakeBackground.Size.Y.Offset)
+        end
     end
 
     if Library.UpdateNotificationPositions then
@@ -11059,12 +11061,14 @@ function Library:Notify(...)
     end
 
     local IsBottomNotify = Library.NotifySide:lower() == "bottom"
+    local SideIsLeft = Library.NotifySide:lower() == "left"
+
     local FakeBackground = New("Frame", {
         AnchorPoint = IsBottomNotify and Vector2.new(0.5, 1)
-            or (Library.NotifySide:lower() == "left" and Vector2.new(0, 0) or Vector2.new(1, 0)),
+            or (SideIsLeft and Vector2.new(0, 0) or Vector2.new(1, 0)),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
-        Size = UDim2.fromOffset(0, 0),
+        Size = IsBottomNotify and UDim2.fromOffset(0, 0) or UDim2.fromOffset(360, 0),
         Visible = false,
         Parent = NotificationArea,
     })
@@ -11073,12 +11077,21 @@ function Library:Notify(...)
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = "MainColor",
         Position = IsBottomNotify
-            and UDim2.new(0, 0, 1, 8)
-            or (Library.NotifySide:lower() == "left" and UDim2.new(-1, -8, 0, 0) or UDim2.new(1, 8, 0, 0)),
+            and UDim2.new(0, 0, 1, 12)
+            or (SideIsLeft and UDim2.new(-1, -12, 0, 0) or UDim2.new(1, 12, 0, 0)),
         Size = UDim2.new(1, 0, 0, 0),
         ZIndex = 5,
         Parent = FakeBackground,
     })
+
+    local HolderScale = New("UIScale", {
+        Scale = 0.96,
+        Parent = Holder,
+    })
+    local HolderStartTransparency = 0
+    Holder.BackgroundTransparency = 1
+    local OpenFadeTween
+    local ExitFadeTween
     table.insert(
         Library.Corners,
         New("UICorner", {
@@ -11087,6 +11100,15 @@ function Library:Notify(...)
         })
     )
     Library:AddOutline(Holder)
+
+    New("Frame", {
+        BackgroundColor3 = "AccentColor",
+        BackgroundTransparency = 0.15,
+        Position = UDim2.fromOffset(8, 0),
+        Size = UDim2.new(1, -16, 0, 2),
+        ZIndex = 6,
+        Parent = Holder,
+    })
 
     local ContentHolder = New("Frame", {
         AutomaticSize = Enum.AutomaticSize.Y,
@@ -11245,27 +11267,32 @@ function Library:Notify(...)
         local ExtraWidth = BigIconLabel and 32 or 0
         local IconWidth = IconLabel and 21 or 0
         local CloseWidth = Data.Closable and 20 or 0
+        local AreaWidth = NotificationArea.AbsoluteSize.X / math.max(Library.DPIScale, 0.001)
+        local FixedSideWidth = math.min(360, math.max(280, AreaWidth))
         local MaxTextWidth = math.max(
-            40,
-            (NotificationArea.AbsoluteSize.X / Library.DPIScale) - 24 - ExtraWidth - CloseWidth
+            120,
+            FixedSideWidth - 24 - ExtraWidth - CloseWidth
         )
 
         if Title then
-            local X, Y = Library:GetTextBounds(Title.Text, Title.FontFace, Title.TextSize, MaxTextWidth - IconWidth)
-            Title.Size = UDim2.fromOffset(X, Y)
-            TitleX = X + IconWidth
+            local X, Y = Library:GetTextBounds(Title.Text, Title.FontFace, Title.TextSize, math.max(40, MaxTextWidth - IconWidth))
+            local TitleWidth = math.min(X, math.max(40, MaxTextWidth - IconWidth))
+            Title.Size = UDim2.fromOffset(TitleWidth, Y)
+            TitleX = TitleWidth + IconWidth
             TitleContainer.Size = UDim2.fromOffset(TitleX, math.max(Y, IconLabel and 16 or 0))
         end
 
         if Desc then
             local X, Y = Library:GetTextBounds(Desc.Text, Desc.FontFace, Desc.TextSize, MaxTextWidth)
-            Desc.Size = UDim2.fromOffset(X, Y)
-            DescX = X
+            DescX = math.min(X, MaxTextWidth)
+            Desc.Size = UDim2.fromOffset(DescX, Y)
         end
 
         local DesiredWidth = math.max(TitleX, DescX) + 24 + ExtraWidth + CloseWidth
         if IsBottomNotify then
-            DesiredWidth = math.clamp(DesiredWidth, 220, 300)
+            DesiredWidth = math.clamp(DesiredWidth, 220, 320)
+        else
+            DesiredWidth = FixedSideWidth
         end
         FakeBackground.Size = UDim2.fromOffset(DesiredWidth, 0)
 
@@ -11314,9 +11341,7 @@ function Library:Notify(...)
         Reason = Reason or "script"
         Data.Destroyed = true
 
-        if Data.Callback then
-            pcall(Data.Callback, Reason)
-        end
+        Library:SafeCallback(Data.Callback, Reason)
 
         if typeof(Data.Time) == "Instance" then
             pcall(Data.Time.Destroy, Data.Time)
@@ -11325,6 +11350,22 @@ function Library:Notify(...)
         if Data.PositionTween then
             StopTween(Data.PositionTween, true)
             Data.PositionTween = nil
+        end
+        if Data.OpenTween then
+            StopTween(Data.OpenTween, true)
+            Data.OpenTween = nil
+        end
+        if Data.ExitTween then
+            StopTween(Data.ExitTween, true)
+            Data.ExitTween = nil
+        end
+        if OpenFadeTween then
+            StopTween(OpenFadeTween, true)
+            OpenFadeTween = nil
+        end
+        if ExitFadeTween then
+            StopTween(ExitFadeTween, true)
+            ExitFadeTween = nil
         end
 
         if DeleteConnection then
@@ -11342,20 +11383,36 @@ function Library:Notify(...)
 
         local ExitPosition
         if IsBottomNotify then
-            ExitPosition = UDim2.new(0, 0, 1, 8)
+            ExitPosition = UDim2.new(0, 0, 1, 12)
+        elseif SideIsLeft then
+            ExitPosition = UDim2.new(-1, -12, 0, 0)
         else
-            ExitPosition = Library.NotifySide:lower() == "left"
-                and UDim2.new(-1, -8, 0, -2)
-                or UDim2.new(1, 8, 0, -2)
+            ExitPosition = UDim2.new(1, 12, 0, 0)
         end
 
-        TweenService:Create(Holder, Library.NotifyTweenInfo, {
+        Data.ExitTween = TweenService:Create(Holder, TweenInfo.new(0.24, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
             Position = ExitPosition,
-        }):Play()
+        })
+        if OpenFadeTween then
+            StopTween(OpenFadeTween, true)
+            OpenFadeTween = nil
+        end
+        ExitFadeTween = TweenService:Create(Holder, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+            BackgroundTransparency = 1,
+        })
+        local ScaleOut = TweenService:Create(HolderScale, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+            Scale = 0.96,
+        })
 
-        task.delay(Library.NotifyTweenInfo.Time, function()
+        Data.ExitTween:Play()
+        ExitFadeTween:Play()
+        ScaleOut:Play()
+
+        task.delay(math.max(0.24, Library.NotifyTweenInfo.Time), function()
             Library.Notifications[FakeBackground] = nil
-            FakeBackground:Destroy()
+            if FakeBackground and FakeBackground.Parent then
+                FakeBackground:Destroy()
+            end
         end)
     end
 
@@ -11411,12 +11468,30 @@ function Library:Notify(...)
 
     local NotificationTargetPosition = Holder.Position
     if IsBottomNotify then
-        Holder.Position = UDim2.new(0, 0, 1, 8)
+        Holder.Position = UDim2.new(0, 0, 1, 12)
+    elseif SideIsLeft then
+        Holder.Position = UDim2.new(-1, -12, 0, 0)
+    else
+        Holder.Position = UDim2.new(1, 12, 0, 0)
     end
 
-    TweenService:Create(Holder, Library.NotifyTweenInfo, {
+    Data.OpenTween = TweenService:Create(Holder, TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
         Position = NotificationTargetPosition,
-    }):Play()
+    })
+    if ExitFadeTween then
+        StopTween(ExitFadeTween, true)
+        ExitFadeTween = nil
+    end
+    OpenFadeTween = TweenService:Create(Holder, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        BackgroundTransparency = HolderStartTransparency,
+    })
+    local ScaleIn = TweenService:Create(HolderScale, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Scale = 1,
+    })
+
+    Data.OpenTween:Play()
+    OpenFadeTween:Play()
+    ScaleIn:Play()
 
     task.defer(function()
         if not Data.Destroyed then
@@ -11467,10 +11542,9 @@ function Library:CreateWindow(WindowInfo)
         math.clamp(WindowInfo.Size.X.Offset, Library.MinSize.X, MaxX),
         math.clamp(WindowInfo.Size.Y.Offset, Library.MinSize.Y, MaxY)
     )
-    if typeof(WindowInfo.Font) == "EnumItem" then
-        WindowInfo.Font = Font.fromEnum(WindowInfo.Font :: any)
-    end
-    WindowInfo.CornerRadius = math.min(WindowInfo.CornerRadius, 20)
+    -- Keep every control on SourceSansBold, regardless of the window config.
+    WindowInfo.Font = Font.fromEnum(Enum.Font.SourceSansBold)
+    WindowInfo.CornerRadius = math.min(WindowInfo.CornerRadius, 5)
 
     local TabButtonsStyle = WindowInfo.TabButtonsStyle
     WindowInfo.EnableSidebarResize = false
@@ -11491,8 +11565,8 @@ function Library:CreateWindow(WindowInfo)
     WindowInfo.SnapMargin = math.max(0, WindowInfo.SnapMargin)
 
     Library.CornerRadius = WindowInfo.CornerRadius
-    WindowInfo.NotifySide = "Bottom"
-    Library:SetNotifySide("Bottom")
+    WindowInfo.NotifySide = "Right"
+    Library:SetNotifySide("Right")
     Library.ShowCustomCursor = WindowInfo.ShowCustomCursor
     Library.Scheme.Font = WindowInfo.Font
     Library.ToggleKeybind = WindowInfo.ToggleKeybind
