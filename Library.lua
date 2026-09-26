@@ -1,4 +1,4 @@
-print("lib v2.0.8b")
+print("lib v2.0.3b")
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -164,7 +164,7 @@ end
 local AspectTheme = {
     BackgroundColor = Color3.fromRGB(15, 15, 15),   -- #0F0F0F
     MainColor = Color3.fromRGB(26, 25, 25),          -- #1A1919
-    SearchColor = Color3.fromRGB(9, 9, 9),           -- #090909
+    SearchColor = Color3.fromRGB(22, 21, 21),       -- #161515
     AccentColor = Color3.fromRGB(93, 93, 93),        -- #5D5D5D
     OutlineColor = Color3.fromRGB(26, 25, 25),       -- #1A1919
     FontColor = Color3.fromRGB(164, 164, 164),       -- #A4A4A4
